@@ -1,0 +1,8 @@
+.DS_Store
+.env
+.repo/
+.secrets/
+
+# certs
+*.pem
+leaderboard/config/test.yaml

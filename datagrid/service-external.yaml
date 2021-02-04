@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: datagrid-service-external
+  namespace: datagrid-demo
+  labels:
+    app: datagrid-service
+    application: datagrid-service
+    template: datagrid-service
+spec:
+  ports:
+    - protocol: TCP
+      port: 11222
+      targetPort: 11222
+  selector:
+    deploymentConfig: datagrid-service
+  type: LoadBalancer
+  sessionAffinity: None
