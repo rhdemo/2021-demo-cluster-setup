@@ -1,0 +1,13 @@
+name: battleships-sunk
+namespace: ""
+runtime: quarkus
+image: quay.io/ilawson/battleships_sunk
+imageDigest: ""
+trigger: events
+builder: quay.io/boson/faas-quarkus-jvm-builder
+builderMap:
+  default: quay.io/boson/faas-quarkus-jvm-builder
+  jvm: quay.io/boson/faas-quarkus-jvm-builder
+  native: quay.io/boson/faas-quarkus-native-builder
+envVars:
+  TESTENV: "example env"
