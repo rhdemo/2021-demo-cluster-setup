@@ -20,11 +20,8 @@ parameters:
   - name: REPLICAS
     value: "1"
     required: true
-  - name: PORT
+  - name: HTTP_PORT
     value: "8080"
-    required: true
-  - name: IP
-    value: "0.0.0.0"
     required: true
   - name: IMAGE_REPOSITORY
     value: quay.io/redhatdemo/2021-game-server:latest
@@ -63,10 +60,8 @@ objects:
         spec:
           containers:
             - env:
-                - name: IP
-                  value: "${IP}"
-                - name: PORT
-                  value: "${PORT}"
+                - name: HTTP_PORT
+                  value: "${HTTP_PORT}"
               envFrom:
                 - secretRef:
                     name: ${SECRET_NAME}
@@ -89,12 +84,12 @@ objects:
               terminationMessagePolicy: File
               readinessProbe:
                 tcpSocket:
-                  port: ${{PORT}}
+                  port: ${{HTTP_PORT}}
                 initialDelaySeconds: 15
                 timeoutSeconds: 5
               livenessProbe:
                 tcpSocket:
-                  port: ${{PORT}}
+                  port: ${{HTTP_PORT}}
                 initialDelaySeconds: 15
                 timeoutSeconds: 5
           dnsPolicy: ClusterFirst
@@ -120,3 +115,16 @@ objects:
           targetPort: 8080
       selector:
         deploymentconfig: ${APPLICATION_NAME}
+  
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      labels:
+        app: ${APPLICATION_NAME}
+      name: ${APPLICATION_NAME}
+    spec:
+      port:
+        targetPort: 8080
+      to:
+        kind: Service
+        name: ${APPLICATION_NAME}
