@@ -16,6 +16,9 @@ endif
 datagrid: oc_login
 	./datagrid/deploy.sh
 
+datagrid-undeploy: oc_login
+	./datagrid/teardown.sh
+
 frontend: oc_login
 	./frontend/deploy.sh
 
