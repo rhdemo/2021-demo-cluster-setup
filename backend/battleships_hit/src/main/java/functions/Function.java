@@ -30,7 +30,7 @@ public class Function
     @Funq
     @CloudEventMapping(responseType = "message.processedbyquarkus")
     //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
-    public Uni<MessageOutput> function( Map<String, String> input, @Context CloudEvent cloudEvent)
+    public Uni<MessageOutput> function( String input, @Context CloudEvent cloudEvent)
     {
       return Uni.createFrom().emitter(emitter -> 
       {
@@ -38,16 +38,17 @@ public class Function
       });    
     }
  
-    public void buildResponse( Map<String, String> input, CloudEvent cloudEvent, UniEmitter<? super MessageOutput> emitter )
+    public void buildResponse( String input, CloudEvent cloudEvent, UniEmitter<? super MessageOutput> emitter )
     {
-      System.out.println( "Size of input: " + input.size());
+      System.out.println("Recv:" + input );
+      //System.out.println( "Size of input: " + input.size());
 
-      for( String key : input.keySet())
-      {
-        System.out.println("  Key (" + key + ") : " + input.get( key ));
-      }
+      //for( String key : input.keySet())
+      //{
+      //  System.out.println("  Key (" + key + ") : " + input.get( key ));
+      //}
 
-      String json = input.get("payload");
+      //String json = input.get("payload");
       
       //System.out.println( json );
 
