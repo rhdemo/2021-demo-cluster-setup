@@ -41,17 +41,7 @@ public class Function
     public void buildResponse( String input, CloudEvent cloudEvent, UniEmitter<? super MessageOutput> emitter )
     {
       System.out.println("Recv:" + input );
-      //System.out.println( "Size of input: " + input.size());
-
-      //for( String key : input.keySet())
-      //{
-      //  System.out.println("  Key (" + key + ") : " + input.get( key ));
-      //}
-
-      //String json = input.get("payload");
       
-      //System.out.println( json );
-
       // Build a return packet
       MessageOutput output = new MessageOutput();
 
