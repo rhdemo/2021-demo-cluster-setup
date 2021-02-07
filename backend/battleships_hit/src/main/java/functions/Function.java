@@ -57,7 +57,7 @@ public class Function
 
       output.setElapsed(System.currentTimeMillis() - start );
       output.setName("Payload Check");
-      output.setDetails(json);
+      output.setDetails(input);
       output.setResponseCode(200);
 
       emitter.complete(output);
