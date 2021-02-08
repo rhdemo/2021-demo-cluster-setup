@@ -69,6 +69,7 @@ public class Function
 
         int status = connection.getResponseCode();
 
+        System.out.println( "Calling: " + outputTarget );
         System.out.println( "REST Service responded wth " + status );
       }
       catch( Exception exc )
