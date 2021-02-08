@@ -61,7 +61,7 @@ public class Function
     {
       try
       {
-        String outputTarget = _watchmanURL + "&" + URLEncoder.encode(output, UTF_8.toString());
+        String outputTarget = _watchmanURL + "&" + URLEncoder.encode(output, "UTF-8");
 
         URL targetURL = new URL(outputTarget);
         HttpURLConnection connection = (HttpURLConnection)targetURL.openConnection();
