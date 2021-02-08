@@ -24,8 +24,8 @@ public class Function
     @Inject
     Vertx vertx;
 
-    @ConfigProperty(name = "TESTENV")
-    String exampleENVvariable;
+    @ConfigProperty(name = "WATCHMAN")
+    String _watchmanURL;
 
     @Funq
     @CloudEventMapping(responseType = "message.processedbyquarkus")
@@ -42,6 +42,9 @@ public class Function
     {
       System.out.println("Recv:" + input );
       
+      // Watchman
+      boolean watched = watchman( "SUNK:" + input );
+      
       // Build a return packet
       MessageOutput output = new MessageOutput();
 
@@ -51,5 +54,29 @@ public class Function
       output.setResponseCode(200);
 
       emitter.complete(output);
+    }
+
+    private boolean watchman( String output )
+    {
+      try
+      {
+        String outputTarget = _watchmanURL + "?payload=" + URLEncoder.encode(output, "UTF-8");
+
+        URL targetURL = new URL(outputTarget);
+        HttpURLConnection connection = (HttpURLConnection)targetURL.openConnection();
+        connection.setRequestMethod("GET");
+
+        int status = connection.getResponseCode();
+
+        System.out.println( "Calling: " + outputTarget );
+        System.out.println( "REST Service responded wth " + status );
+      }
+      catch( Exception exc )
+      {
+        System.out.println( "Watchman failed due to " + exc.toString());
+        return false;
+      }
+
+      return true;
     }
 }

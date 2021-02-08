@@ -10,4 +10,4 @@ builderMap:
   jvm: quay.io/boson/faas-quarkus-jvm-builder
   native: quay.io/boson/faas-quarkus-native-builder
 envVars:
-  TESTENV: "example env"
+  WATCHMAN: "http://watchman-jsonquarkussandbox.apps.summit-dev-21.k9pw.p1.openshiftapps.com/watch"
