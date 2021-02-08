@@ -76,5 +76,7 @@ public class Function
         System.out.println( "Watchman failed due to " + exc.toString());
         return false;
       }
+
+      return true;
     }
 }
