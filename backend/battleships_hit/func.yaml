@@ -10,4 +10,4 @@ builderMap:
   jvm: quay.io/boson/faas-quarkus-jvm-builder
   native: quay.io/boson/faas-quarkus-native-builder
 envVars:
-  TESTENV: "example env"
+  WATCHMAN: "example env"
