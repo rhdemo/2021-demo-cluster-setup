@@ -7,7 +7,11 @@ import io.quarkus.funqy.knative.events.CloudEventMapping;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.subscription.UniEmitter;
 import io.vertx.core.Vertx;
+
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import org.json.simple.*;
+import org.json.simple.parser.*;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -44,12 +48,48 @@ public class Function
       // Build a return packet
       MessageOutput output = new MessageOutput();
 
+      //Process the payload
+      Map<String,String> data = processPayload( input );
+
       output.setElapsed(System.currentTimeMillis() - start );
       output.setName("Payload Check");
       output.setDetails(input);
       output.setResponseCode(200);
 
       emitter.complete(output);
+    }
+
+    private Map<String,String> processPayload( String payload )
+    {
+      try
+      {
+        Map<String,String> output = new HashMap<>();
+        Object objPayload = new JSONParser().parse(payload);
+
+        JSONObject jsonPayload = (JSONObject)objPayload; 
+
+        String by = (String)jsonPayload.get("by");
+        String against = (String)jsonPayload.get("against");
+        String origin = (String)jsonPayload.get("origin");
+        String timestamp = (String)jsonPayload.get("ts");
+        String matchID = (String)jsonPayload.get("match");
+
+        System.out.println( "(Parsed) by:" + by + " against:" + against + " origin:" + origin + " timestamp:" + timestamp + " matchID:" + matchID );
+
+        output.put( "by", by );
+        output.put( "against", against );
+        output.put( "origin", origin );
+        output.put( "timestamp", timestamp );
+        output.put( "matchID", matchID );
+
+        return output;
+      }
+      catch( Exception exc )
+      {
+        System.out.println("Failed to parse JSON due to " + exc.toString());
+        watchman("JSON FAIL with " + payload );
+        return null;
+      }
     }
 
     private boolean watchman( String output )
