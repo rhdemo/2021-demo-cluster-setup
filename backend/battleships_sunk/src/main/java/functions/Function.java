@@ -10,8 +10,7 @@ import io.vertx.core.Vertx;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.inject.Inject;
-import java.net.ConnectException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
