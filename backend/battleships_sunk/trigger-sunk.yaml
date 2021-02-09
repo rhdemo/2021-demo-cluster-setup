@@ -7,7 +7,7 @@ spec:
   broker: default
   filter:
     attributes:
-      type: sunk
+      type: sink
   subscriber:
     ref:
      apiVersion: serving.knative.dev/v1
