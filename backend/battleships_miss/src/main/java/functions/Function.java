@@ -71,7 +71,7 @@ public class Function
         String by = (String)jsonPayload.get("by");
         String against = (String)jsonPayload.get("against");
         String origin = (String)jsonPayload.get("origin");
-        String timestamp = (String)jsonPayload.get("ts");
+        long timestamp = (Long)jsonPayload.get("ts");
         String matchID = (String)jsonPayload.get("match");
 
         System.out.println( "(Parsed) by:" + by + " against:" + against + " origin:" + origin + " timestamp:" + timestamp + " matchID:" + matchID );
@@ -79,7 +79,7 @@ public class Function
         output.put( "by", by );
         output.put( "against", against );
         output.put( "origin", origin );
-        output.put( "timestamp", timestamp );
+        output.put( "timestamp", Long.toString(timestamp) );
         output.put( "matchID", matchID );
 
         return output;
