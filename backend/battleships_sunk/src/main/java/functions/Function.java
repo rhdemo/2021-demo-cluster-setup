@@ -42,7 +42,7 @@ public class Function
       System.out.println("Recv:" + input );
       
       // Watchman
-      boolean watched = watchman( "SUNK:" + input );
+      boolean watched = watchman( "SUNK " + input );
       
       // Build a return packet
       MessageOutput output = new MessageOutput();
