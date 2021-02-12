@@ -72,14 +72,16 @@ public class Function
         String origin = (String)jsonPayload.get("origin");
         long timestamp = (Long)jsonPayload.get("ts");
         String matchID = (String)jsonPayload.get("match");
+        String type = (String)jsonPayload.get("type");
 
-        System.out.println( "(Parsed) by:" + by + " against:" + against + " origin:" + origin + " timestamp:" + timestamp + " matchID:" + matchID );
+        System.out.println( "(Parsed) by:" + by + " against:" + against + " origin:" + origin + " timestamp:" + timestamp + " matchID:" + matchID + " type:" + type );
 
         output.put( "by", by );
         output.put( "against", against );
         output.put( "origin", origin );
         output.put( "timestamp", Long.toString(timestamp) );
         output.put( "matchID", matchID );
+        output.put( "type", type );
 
         return output;
       }
