@@ -19,6 +19,12 @@ datagrid: oc_login
 datagrid-undeploy: oc_login
 	./datagrid/teardown.sh
 
+ai: oc_login
+	./ai/deploy.sh
+
+ai-undeploy: oc_login
+	./ai/undeploy.sh
+
 frontend: oc_login
 	./frontend/deploy.sh
 

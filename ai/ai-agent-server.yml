@@ -2,42 +2,28 @@ apiVersion: v1
 kind: Template
 
 labels:
-  application: game-server
+  application: ai-agent-server
 
 metadata:
-  name: game-server
+  name: ai-agent-server
 
 parameters:
   - name: APPLICATION_NAME
-    value: game-server
-    required: true
-  - name: SECRET_NAME
-    value: 2021-demo-common
-    required: true
+    value: ai-agent-server
   - name: CONFIG_MAP_NAME
     value: 2021-demo-common
-    required: true
   - name: REPLICAS
     value: "1"
-    required: true
-  - name: HTTP_PORT
-    value: "8080"
-    required: true
   - name: IMAGE_REPOSITORY
-    value: quay.io/redhatdemo/2021-game-server:latest
-    required: true
+    value: quay.io/redhatdemo/2021-ai-agent-server:latest
   - name: CONTAINER_REQUEST_CPU
-    value: 500m
+    value: 300m
   - name: CONTAINER_REQUEST_MEMORY
-    value: 500Mi
+    value: 400Mi
   - name: CONTAINER_LIMIT_CPU
-    value: 1000m
+    value: 500m
   - name: CONTAINER_LIMIT_MEMORY
-    value: 2000Mi
-  - name: ROLLOUT_STRATEGY
-    value: "Rolling"
-    required: true
-
+    value: 512Mi
 
 objects:
   - apiVersion: v1
@@ -51,7 +37,7 @@ objects:
       selector:
         deploymentconfig: ${APPLICATION_NAME}
       strategy:
-        type: ${ROLLOUT_STRATEGY}
+        type: Rolling
       template:
         metadata:
           labels:
@@ -59,20 +45,12 @@ objects:
             deploymentconfig: ${APPLICATION_NAME}
         spec:
           containers:
-            - env:
-              - name: AI_AGENT_SERVER_URL
-                value: http://ai-agent-server.ai.svc.cluster.local:8080/agent
-              envFrom:
-                - secretRef:
-                    name: ${SECRET_NAME}
+            - envFrom:
                 - configMapRef:
                     name: ${CONFIG_MAP_NAME}
               image: ${IMAGE_REPOSITORY}
               imagePullPolicy: Always
               name: ${APPLICATION_NAME}
-              ports:
-                - containerPort: 8080
-                  protocol: TCP
               resources:
                 requests:
                   cpu: ${CONTAINER_REQUEST_CPU}
@@ -82,16 +60,6 @@ objects:
                   memory: ${CONTAINER_LIMIT_MEMORY}
               terminationMessagePath: /dev/termination-log
               terminationMessagePolicy: File
-              readinessProbe:
-                tcpSocket:
-                  port: ${{HTTP_PORT}}
-                initialDelaySeconds: 15
-                timeoutSeconds: 5
-              livenessProbe:
-                tcpSocket:
-                  port: ${{HTTP_PORT}}
-                initialDelaySeconds: 15
-                timeoutSeconds: 5
           dnsPolicy: ClusterFirst
           restartPolicy: Always
           schedulerName: default-scheduler
@@ -100,7 +68,7 @@ objects:
       test: false
       triggers:
         - type: ConfigChange
-
+  
   - apiVersion: v1
     kind: Service
     metadata:
@@ -115,7 +83,7 @@ objects:
           targetPort: 8080
       selector:
         deploymentconfig: ${APPLICATION_NAME}
-  
+
   - apiVersion: v1
     kind: Route
     metadata:
