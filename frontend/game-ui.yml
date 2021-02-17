@@ -54,8 +54,6 @@ objects:
               imagePullPolicy: Always
               name: ${APPLICATION_NAME}
               env:
-                - name: NODE_ENV
-                  value: 'prod'
                 - name: HTTP_PORT
                   value: '8080'
               ports:
