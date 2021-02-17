@@ -1,0 +1,1 @@
+kn service update battleships--sunk --env WATCHMAN=http://watchman-battleships.apps.cluster-35c7.35c7.example.opentlc.com/watch
