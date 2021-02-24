@@ -11,7 +11,7 @@ public class Watchman
     _watchmanURL = targetURL;
   }
 
-  private boolean inform( String output )
+  public boolean inform( String output )
   {
     try
     {
