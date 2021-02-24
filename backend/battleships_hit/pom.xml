@@ -49,9 +49,35 @@
       <artifactId>json-simple</artifactId>
       <version>1.1.1</version>
     </dependency>
+    <dependency>
+      <groupId>org.uth.summit</groupId>
+      <artifactId>utils</artifactId>
+      <version>1.0.0</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>2.5.2</version>
+        <executions>
+          <execution>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>lib/utils-1.0.0.jar</file>
+              <groupId>org.uth.summit</groupId>
+              <artifactId>utils</artifactId>
+              <version>1.0.0</version>
+              <packaging>jar</packaging>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>

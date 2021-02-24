@@ -16,6 +16,8 @@ import javax.inject.Inject;
 import java.net.*;
 import java.util.*;
 
+import org.uth.summit.*;
+
 public class Function 
 {
     private long start = System.currentTimeMillis();
@@ -39,10 +41,14 @@ public class Function
  
     public void buildResponse( String input, CloudEvent cloudEvent, UniEmitter<? super MessageOutput> emitter )
     {
+      // Setup Watchman
+      Watchman watchman = new Watchman( _watchmanURL );
+
       System.out.println("Recv:" + input );
 
       // Watchman
-      boolean watched = watchman( "HIT:" + input );
+      //boolean watched = watchman( "HIT:" + input );
+      boolean watched = watchman.inform( "HIT:" + input );
       
       // Build a return packet
       MessageOutput output = new MessageOutput();
@@ -88,7 +94,6 @@ public class Function
       catch( Exception exc )
       {
         System.out.println("Failed to parse JSON due to " + exc.toString());
-        watchman("JSON FAIL with " + payload );
         return null;
       }
     }
