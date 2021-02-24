@@ -53,6 +53,8 @@
       <groupId>org.uth.summit</groupId>
       <artifactId>utils</artifactId>
       <version>1.0.0</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/utils-1.0.0.jar</systemPath>
     </dependency>
   </dependencies>
   <build>
