@@ -33,6 +33,8 @@ public class Function
     //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
     public Uni<MessageOutput> function( String input, @Context CloudEvent cloudEvent)
     {
+      System.out.println( "RECV: " + input );
+
       return Uni.createFrom().emitter(emitter -> 
       {
         buildResponse(input, cloudEvent, emitter);
@@ -48,7 +50,7 @@ public class Function
 
       // Watchman
       //boolean watched = watchman( "HIT:" + input );
-      boolean watched = watchman.inform( "HIT:" + input );
+      boolean watched = watchman.inform( "LOSE:" + input );
       
       // Build a return packet
       MessageOutput output = new MessageOutput();
