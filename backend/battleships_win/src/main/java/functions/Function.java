@@ -29,7 +29,7 @@ public class Function
     String _watchmanURL;
 
     @Funq
-    @CloudEventMapping(responseType = "message.processedbyquarkus")
+    @CloudEventMapping(responseType = "winprocessed")
     //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
     public Uni<MessageOutput> function( String input, @Context CloudEvent cloudEvent)
     {
@@ -49,7 +49,6 @@ public class Function
       System.out.println("Recv:" + input );
 
       // Watchman
-      //boolean watched = watchman( "HIT:" + input );
       boolean watched = watchman.inform( "WIN:" + input );
       
       // Build a return packet
@@ -58,10 +57,13 @@ public class Function
       //Process the payload
       Map<String,String> data = processPayload( input );
 
-      output.setElapsed(System.currentTimeMillis() - start );
-      output.setName("Payload Check");
-      output.setDetails(input);
-      output.setResponseCode(200);
+      if( data != null )
+      {
+        output.setTimestamp( System.currentTimeMillis() );
+        output.setPlayer( data.get("player"));
+        output.setMatch( data.get("match"));
+        output.setGame( data.get("game"));
+      }
 
       emitter.complete(output);
     }
@@ -75,22 +77,16 @@ public class Function
 
         JSONObject jsonPayload = (JSONObject)objPayload; 
 
-        String by = (String)jsonPayload.get("by");
-        String against = (String)jsonPayload.get("against");
-        String origin = (String)jsonPayload.get("origin");
-        long timestamp = (Long)jsonPayload.get("ts");
+        String gameID = (String)josnPayload.get("game");
         String matchID = (String)jsonPayload.get("match");
-        String type = (String)jsonPayload.get("type");
+        String playerID = (String)josnPayload.get("player");
 
         System.out.println( "(Parsed) by:" + by + " against:" + against + " origin:" + origin + " timestamp:" + timestamp + " matchID:" + matchID + " type:" + type );
 
-        output.put( "by", by );
-        output.put( "against", against );
-        output.put( "origin", origin );
-        output.put( "timestamp", Long.toString(timestamp) );
-        output.put( "matchID", matchID );
-        output.put( "type", type );
-
+        output.put( "player", playerID );
+        output.put( "match", matchID );
+        output.put( "game", gameID );
+        
         return output;
       }
       catch( Exception exc )
