@@ -79,9 +79,9 @@ public class Function
 
         String gameID = (String)josnPayload.get("game");
         String matchID = (String)jsonPayload.get("match");
-        String playerID = (String)josnPayload.get("player");
+        String playerID = (String)jsonPayload.get("player");
 
-        System.out.println( "(Parsed) by:" + by + " against:" + against + " origin:" + origin + " timestamp:" + timestamp + " matchID:" + matchID + " type:" + type );
+        System.out.println( "(Parsed) Game: " + gameID + " Match: " + matchID + " Player: " + playerID );
 
         output.put( "player", playerID );
         output.put( "match", matchID );
