@@ -77,7 +77,7 @@ public class Function
 
         JSONObject jsonPayload = (JSONObject)objPayload; 
 
-        String gameID = (String)josnPayload.get("game");
+        String gameID = (String)jsonPayload.get("game");
         String matchID = (String)jsonPayload.get("match");
         String playerID = (String)jsonPayload.get("player");
 
