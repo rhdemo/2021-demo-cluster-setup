@@ -17,6 +17,8 @@ import javax.inject.Inject;
 import java.util.*;
 import java.net.*;
 
+import org.uth.summit.utils.*;
+
 public class Function 
 {
     private long start = System.currentTimeMillis();
@@ -42,8 +44,11 @@ public class Function
     {
       System.out.println("Recv:" + input );
 
+      // Setup Watchman
+      Watchman watchman = new Watchman( _watchmanURL );
+
       // Watchman
-      boolean watched = watchman( "MISS:" + input );
+      boolean watched = watchman.inform( "MISS:" + input );
       
       // Build a return packet
       MessageOutput output = new MessageOutput();
@@ -87,11 +92,11 @@ public class Function
       catch( Exception exc )
       {
         System.out.println("Failed to parse JSON due to " + exc.toString());
-        watchman("JSON FAIL with " + payload );
         return null;
       }
     }
 
+    /** 
     private boolean watchman( String output )
     {
       try
@@ -114,5 +119,5 @@ public class Function
       }
 
       return true;
-    }
+    }*/
 }
