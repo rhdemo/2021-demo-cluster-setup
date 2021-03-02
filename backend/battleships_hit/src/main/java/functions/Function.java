@@ -29,7 +29,7 @@ public class Function
     String _watchmanURL;
 
     @Funq
-    @CloudEventMapping(responseType = "message.processedbyquarkus")
+    @CloudEventMapping(responseType = "hitprocessed")
     //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
     public Uni<MessageOutput> function( String input, @Context CloudEvent cloudEvent)
     {
@@ -47,7 +47,6 @@ public class Function
       System.out.println("Recv:" + input );
 
       // Watchman
-      //boolean watched = watchman( "HIT:" + input );
       boolean watched = watchman.inform( "HIT:" + input );
       
       // Build a return packet
@@ -56,10 +55,18 @@ public class Function
       //Process the payload
       Map<String,String> data = processPayload( input );
 
-      output.setElapsed(System.currentTimeMillis() - start );
-      output.setName("Payload Check");
-      output.setDetails(input);
-      output.setResponseCode(200);
+      if( data != null )
+      {
+        output.setBy( data.get("by"));
+        output.setAgainst( data.get("against"));
+        output.setOrigin( data.get("origin"));
+        output.setTimestamp( (Long)data.get("timestamp"));
+        output.setMatchID( data.get("matchID"));
+        output.setGameID( data.get("gameID"));
+        output.setType( data.get("type"));
+
+        // PING INFINISPAN HERE
+      }
 
       emitter.complete(output);
     }
@@ -78,15 +85,17 @@ public class Function
         String origin = (String)jsonPayload.get("origin");
         long timestamp = (Long)jsonPayload.get("ts");
         String matchID = (String)jsonPayload.get("match");
+        String gameID = (String)jsonPayload.get("game");
         String type = (String)jsonPayload.get("type");
 
-        System.out.println( "(Parsed) by:" + by + " against:" + against + " origin:" + origin + " timestamp:" + timestamp + " matchID:" + matchID + " type:" + type );
+        System.out.println( "(Parsed) by:" + by + " against:" + against + " origin:" + origin + " timestamp:" + timestamp + " matchID:" + matchID + " type:" + type + " gameID: " + gameID );
 
         output.put( "by", by );
         output.put( "against", against );
         output.put( "origin", origin );
         output.put( "timestamp", Long.toString(timestamp) );
         output.put( "matchID", matchID );
+        output.put( "gameID", gameID );
         output.put( "type", type );
 
         return output;
@@ -97,29 +106,4 @@ public class Function
         return null;
       }
     }
-
-    /** 
-    private boolean watchman( String output )
-    {
-      try
-      {
-        String outputTarget = _watchmanURL + "?payload=" + URLEncoder.encode(output, "UTF-8");
-
-        URL targetURL = new URL(outputTarget);
-        HttpURLConnection connection = (HttpURLConnection)targetURL.openConnection();
-        connection.setRequestMethod("GET");
-
-        int status = connection.getResponseCode();
-
-        System.out.println( "Calling: " + outputTarget );
-        System.out.println( "REST Service responded wth " + status );
-      }
-      catch( Exception exc )
-      {
-        System.out.println( "Watchman failed due to " + exc.toString());
-        return false;
-      }
-
-      return true;
-    } */
 }
