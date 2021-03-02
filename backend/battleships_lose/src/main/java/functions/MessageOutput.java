@@ -2,35 +2,35 @@ package functions;
 
 public class MessageOutput
 {
-  private int _responseCode = 0;
-  private String _name = null;
-  private String _details = null;
-  private long _elapsed = 0;
-
-  // Setters
-  public void setResponseCode( int value )
-  {
-    _responseCode = value;
-  }
-
-  public void setName( String name )
-  {
-    _name = name;
-  }
-
-  public void setDetails( String details )
-  {
-    _details = details;
-  }
-
-  public void setElapsed( long value )
-  {
-    _elapsed = value;
-  }
+  private String _player = null;
+  private String _match = null;
+  private String _game = null;
+  private long _timestamp = 0;
   
+  // Setters
+  public void setPlayer( String player )
+  {
+    _player = player;
+  }
+
+  public void setMatch( String match )
+  {
+    _match = match;
+  }
+
+  public void setGame( String game )
+  {
+    _game = game;
+  }
+
+  public void setTimestamp( long timestamp )
+  {
+    _timestamp = timestamp;
+  }
+
   // Accessors
-  public int getResponseCode() { return this._responseCode; }
-  public String getName() { return this._name; }
-  public String getDetails() { return this._details; }
-  public long getElapsed() { return this._elapsed; }
+  public long getTimestamp() { return _timestamp; }
+  public String getPlayer() { return _player; }
+  public String getMatch() { return _match; }
+  public String getGame() { return _game; }
 }
