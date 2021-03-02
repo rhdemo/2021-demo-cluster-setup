@@ -60,7 +60,7 @@ public class Function
         output.setBy( data.get("by"));
         output.setAgainst( data.get("against"));
         output.setOrigin( data.get("origin"));
-        output.setTimestamp( (Long)data.get("timestamp"));
+        output.setTimestamp( Long.parseLong( data.get("timestamp")));
         output.setMatchID( data.get("matchID"));
         output.setGameID( data.get("gameID"));
         output.setType( data.get("type"));
