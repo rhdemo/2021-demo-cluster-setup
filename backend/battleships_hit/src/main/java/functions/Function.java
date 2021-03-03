@@ -44,7 +44,7 @@ public class Function
       // Setup Watchman
       Watchman watchman = new Watchman( _watchmanURL );
 
-      System.out.println("Recv:" + input );
+     System.out.println("Recv:" + input );
 
       // Watchman
       boolean watched = watchman.inform( "HIT:" + input );
@@ -64,6 +64,8 @@ public class Function
         output.setMatchID( data.get("matchID"));
         output.setGameID( data.get("gameID"));
         output.setType( data.get("type"));
+
+        // Calculate score delta
 
         // PING INFINISPAN HERE
       }
