@@ -47,9 +47,7 @@ public class Function
       System.out.println("Recv:" + input );
 
       // Watchman
-      boolean watched = watchman.inform( "SINKimport org.uth.summit.utils.*;
-
-      :" + input );
+      boolean watched = watchman.inform( "SINK:" + input );
       
       // Build a return packet
       MessageOutput output = new MessageOutput();
