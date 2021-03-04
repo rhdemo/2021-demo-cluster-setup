@@ -62,7 +62,7 @@ public class Function
         output.setPlayer( data.get("player"));
         output.setMatch( data.get("match"));
         output.setGame( data.get("game"));
-        output.set( data.get("human").equals("true"));
+        output.setHuman( data.get("human").equals("true"));
       }
 
       emitter.complete(output);
