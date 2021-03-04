@@ -13,7 +13,7 @@ public class MessageOutput
   public void setMatch( String match ) { _match = match; }
   public void setGame( String game ) { _game = game; }
   public void setTimestamp( long timestamp ) { _timestamp = timestamp; }
-  public void setHuman( boolean human ) ( _human = human; )
+  public void setHuman( boolean human ) { _human = human; }
 
   // Accessors
   public long getTimestamp() { return _timestamp; }
