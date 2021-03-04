@@ -19,7 +19,7 @@ public class MessageOutput
   public void setOrigin( String origin ) { _origin = origin; }
   public void setType( String type ) { _type = type; }
   public void setTimestamp( long timestamp ) { _timestamp = timestamp; }
-  public void setHuman( boolean human ) { _human = huamn; }
+  public void setHuman( boolean human ) { _human = human; }
   
   // Accessors
   public String getBy() { return _by; }
