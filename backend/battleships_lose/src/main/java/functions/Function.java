@@ -63,6 +63,7 @@ public class Function
         output.setPlayer( data.get("player"));
         output.setMatch( data.get("match"));
         output.setGame( data.get("game"));
+        output.setHuman( data.get("human").equals( "true "));
       }
 
       emitter.complete(output);
@@ -80,12 +81,14 @@ public class Function
         String gameID = (String)jsonPayload.get("game");
         String matchID = (String)jsonPayload.get("match");
         String playerID = (String)jsonPayload.get("player");
+        boolean human = (boolean)jsonPayload.get("human");
 
-        System.out.println( "(Parsed) Game: " + gameID + " Match: " + matchID + " Player: " + playerID );
+        System.out.println( "(Parsed) Game: " + gameID + " Match: " + matchID + " Player: " + playerID + " Human: " + human );
 
         output.put( "player", playerID );
         output.put( "match", matchID );
         output.put( "game", gameID );
+        output.put( "human", ( human? "true" : "false ") );
         
         return output;
       }

@@ -64,6 +64,7 @@ public class Function
         output.setMatchID( data.get("matchID"));
         output.setGameID( data.get("gameID"));
         output.setType( data.get("type"));
+        output.setHuman( data.get("human").equals("true"));
 
         // Calculate score delta
 
@@ -89,8 +90,9 @@ public class Function
         String matchID = (String)jsonPayload.get("match");
         String gameID = (String)jsonPayload.get("game");
         String type = (String)jsonPayload.get("type");
+        boolean human = (boolean)jsonPayload.get("human");
 
-        System.out.println( "(Parsed) by:" + by + " against:" + against + " origin:" + origin + " timestamp:" + timestamp + " matchID:" + matchID + " type:" + type + " gameID: " + gameID );
+        System.out.println( "(Parsed) by:" + by + " against:" + against + " origin:" + origin + " timestamp:" + timestamp + " matchID:" + matchID + " type:" + type + " gameID: " + gameID + " human: " + human );
 
         output.put( "by", by );
         output.put( "against", against );
@@ -99,6 +101,7 @@ public class Function
         output.put( "matchID", matchID );
         output.put( "gameID", gameID );
         output.put( "type", type );
+        output.put( "human", ( human ? "true" : "false" ));
 
         return output;
       }

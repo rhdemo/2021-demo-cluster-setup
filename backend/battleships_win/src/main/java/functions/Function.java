@@ -30,7 +30,6 @@ public class Function
 
     @Funq
     @CloudEventMapping(responseType = "winprocessed")
-    //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
     public Uni<MessageOutput> function( String input, @Context CloudEvent cloudEvent)
     {
       System.out.println( "RECV: " + input );
@@ -63,6 +62,7 @@ public class Function
         output.setPlayer( data.get("player"));
         output.setMatch( data.get("match"));
         output.setGame( data.get("game"));
+        output.set( data.get("human").equals("true"));
       }
 
       emitter.complete(output);
@@ -80,12 +80,14 @@ public class Function
         String gameID = (String)jsonPayload.get("game");
         String matchID = (String)jsonPayload.get("match");
         String playerID = (String)jsonPayload.get("player");
+        boolean human = (boolean)jsonPayload.get("human");
 
-        System.out.println( "(Parsed) Game: " + gameID + " Match: " + matchID + " Player: " + playerID );
+        System.out.println( "(Parsed) Game: " + gameID + " Match: " + matchID + " Player: " + playerID + " human: " + human );
 
         output.put( "player", playerID );
         output.put( "match", matchID );
         output.put( "game", gameID );
+        output.put( "human", ( human ? "true" : "false" ));
         
         return output;
       }
@@ -95,29 +97,4 @@ public class Function
         return null;
       }
     }
-
-    /** 
-    private boolean watchman( String output )
-    {
-      try
-      {
-        String outputTarget = _watchmanURL + "?payload=" + URLEncoder.encode(output, "UTF-8");
-
-        URL targetURL = new URL(outputTarget);
-        HttpURLConnection connection = (HttpURLConnection)targetURL.openConnection();
-        connection.setRequestMethod("GET");
-
-        int status = connection.getResponseCode();
-
-        System.out.println( "Calling: " + outputTarget );
-        System.out.println( "REST Service responded wth " + status );
-      }
-      catch( Exception exc )
-      {
-        System.out.println( "Watchman failed due to " + exc.toString());
-        return false;
-      }
-
-      return true;
-    } */
 }
