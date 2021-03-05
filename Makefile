@@ -14,7 +14,7 @@ else
 endif
 
 datagrid: oc_login
-	@$(MAKE) -C datagrid deploy
+	./datagrid/deploy.sh
 
 datagrid-undeploy: oc_login
 	./datagrid/teardown.sh

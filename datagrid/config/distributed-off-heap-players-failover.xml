@@ -1,0 +1,21 @@
+<infinispan>
+    <cache-container>
+        <distributed-cache-configuration name="distributed-off-heap" statistics="true">
+            <encoding>
+                <key media-type="text/plain"/>
+                <value media-type="text/plain"/>
+            </encoding>
+            <memory>
+                <off-heap />
+            </memory>
+            <persistence availability-interval="-1">
+                <remote-store xmlns="urn:infinispan:config:store:remote:10.1" raw-values="true" shared="true" segmented="false" cache="game" marshaller="org.infinispan.commons.marshall.UTF8StringMarshaller">
+                    <write-behind modification-queue-size="16384" />
+                    <!-- Host must be updated to the ExternalIp value of `oc get service/datagrid-service-external` after BACKUP_SITE is deployed -->
+                    <remote-server host="##BACKUP_SITE_IP##" port="11222" />
+                    <property name="infinispan.client.hotrod.client_intelligence">BASIC</property>
+                </remote-store>
+            </persistence>
+        </distributed-cache-configuration>
+    </cache-container>
+</infinispan>
