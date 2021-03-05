@@ -1,6 +1,8 @@
-create cache --file=/config/distributed-off-heap.xml game
-create cache --file=/config/distributed-off-heap.xml match-instances
-create cache --file=/config/distributed-off-heap.xml players
+create cache --file=/tmp/config/game.xml game
+create cache --file=/tmp/config/match-instances.xml match-instances
+create cache --file=/tmp/config/players.xml players
+create cache --file=/tmp/config/players-scores.xml players-scores
+create cache --file=/tmp/config/players-shots.xml players-shots
 
 cd caches/game
-put --encoding=application/json --file=/config/game-config.json game
+put --encoding=application/json --file=/tmp/config/game-config.json game

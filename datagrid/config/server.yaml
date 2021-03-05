@@ -1,8 +1,0 @@
-endpoints:
-  hotrod:
-    auth: false
-  rest:
-    auth: true
-jgroups:
-  dnsPing:
-    query: datagrid-ping.datagrid-demo.svc.cluster.local
