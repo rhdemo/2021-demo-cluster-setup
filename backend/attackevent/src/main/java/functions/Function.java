@@ -61,7 +61,7 @@ public class Function
         String game = message.getString("game");
         String match = message.getString("match");
         boolean hit = message.getBoolean("hit");
-        Long timestamp = message.getLong("ts");
+        Long ts = message.getLong("ts");
         JsonObject by = message.getJsonObject("by");
         String uuid = by.getString("uuid");
         boolean human = by.getBoolean("human");
