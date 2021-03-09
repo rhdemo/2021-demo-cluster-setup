@@ -9,8 +9,7 @@ import io.smallrye.mutiny.subscription.UniEmitter;
 import io.vertx.core.Vertx;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import org.json.simple.*;
-import org.json.simple.parser.*;
+import io.vertx.core.json.JsonObject;
 
 import javax.inject.Inject;
 import java.net.*;
@@ -84,23 +83,11 @@ public class Function
       try
       {
         Map<String,String> output = new HashMap<>();
-        Object objPayload = new JSONParser().parse(payload);
-
-        System.out.println( objPayload );
-
-        JSONObject jsonPayload = (JSONObject)objPayload; 
-
-        String by = (String)jsonPayload.get("by");
-        String against = (String)jsonPayload.get("against");
-        String origin = (String)jsonPayload.get("origin");
-        long timestamp = (Long)jsonPayload.get("ts");
-        String matchID = (String)jsonPayload.get("match");
-        String gameID = (String)jsonPayload.get("game");
-        String type = (String)jsonPayload.get("type");
-        boolean human = (boolean)jsonPayload.get("human");
-
-        System.out.println( "(Parsed) by:" + by + " against:" + against + " origin:" + origin + " timestamp:" + timestamp + " matchID:" + matchID + " type:" + type + " gameID: " + gameID + " human: " + human );
-
+        JsonObject message = new JsonObject(payload);
+        
+        System.out.println( message );
+  
+        /** 
         output.put( "by", by );
         output.put( "against", against );
         output.put( "origin", origin );
@@ -109,6 +96,7 @@ public class Function
         output.put( "gameID", gameID );
         output.put( "type", type );
         output.put( "human", ( human ? "true" : "false"));
+        */
 
         return output;
       }
