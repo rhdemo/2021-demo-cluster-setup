@@ -16,6 +16,8 @@ import javax.inject.Inject;
 import java.net.*;
 import java.util.*;
 
+import org.uth.summit.utils.*;
+
 public class Function 
 {
     private long start = System.currentTimeMillis();
@@ -27,7 +29,7 @@ public class Function
     String _watchmanURL;
 
     @Funq
-    @CloudEventMapping(responseType = "message.processedbyquarkus")
+    @CloudEventMapping(responseType = "sinkprocessed")
     //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
     public Uni<MessageOutput> function( String input, @Context CloudEvent cloudEvent)
     {
@@ -39,10 +41,13 @@ public class Function
  
     public void buildResponse( String input, CloudEvent cloudEvent, UniEmitter<? super MessageOutput> emitter )
     {
+      // Setup Watchman
+      Watchman watchman = new Watchman( _watchmanURL );
+
       System.out.println("Recv:" + input );
-      
+
       // Watchman
-      boolean watched = watchman( "SUNK " + input );
+      boolean watched = watchman.inform( "SINK:" + input );
       
       // Build a return packet
       MessageOutput output = new MessageOutput();
@@ -50,10 +55,21 @@ public class Function
       //Process the payload
       Map<String,String> data = processPayload( input );
 
-      output.setElapsed(System.currentTimeMillis() - start );
-      output.setName("Payload Check");
-      output.setDetails(input);
-      output.setResponseCode(200);
+      if( data != null )
+      {
+        output.setBy( data.get("by"));
+        output.setAgainst( data.get("against"));
+        output.setOrigin( data.get("origin"));
+        output.setTimestamp( Long.parseLong( data.get("timestamp")));
+        output.setMatchID( data.get("matchID"));
+        output.setGameID( data.get("gameID"));
+        output.setType( data.get("type"));
+        output.setHuman( data.get("human").equals("true"));
+
+        // Calculate score delta
+
+        // PING INFINISPAN HERE
+      }
 
       emitter.complete(output);
     }
@@ -69,49 +85,30 @@ public class Function
 
         String by = (String)jsonPayload.get("by");
         String against = (String)jsonPayload.get("against");
-        String type = (String)jsonPayload.get("type");
+        String origin = (String)jsonPayload.get("origin");
         long timestamp = (Long)jsonPayload.get("ts");
         String matchID = (String)jsonPayload.get("match");
+        String gameID = (String)jsonPayload.get("game");
+        String type = (String)jsonPayload.get("type");
+        boolean human = (boolean)jsonPayload.get("human");
 
-        System.out.println( "(Parsed) by:" + by + " against:" + against + " type:" + type + " timestamp:" + timestamp + " matchID:" + matchID );
+        System.out.println( "(Parsed) by:" + by + " against:" + against + " origin:" + origin + " timestamp:" + timestamp + " matchID:" + matchID + " type:" + type + " gameID: " + gameID + " human: " + human );
 
         output.put( "by", by );
         output.put( "against", against );
-        output.put( "type", type );
+        output.put( "origin", origin );
         output.put( "timestamp", Long.toString(timestamp) );
         output.put( "matchID", matchID );
+        output.put( "gameID", gameID );
+        output.put( "type", type );
+        output.put( "human", ( human ? "true" : "false" ));
 
         return output;
       }
       catch( Exception exc )
       {
         System.out.println("Failed to parse JSON due to " + exc.toString());
-        watchman("JSON FAIL with " + payload );
         return null;
       }
-    }
-
-    private boolean watchman( String output )
-    {
-      try
-      {
-        String outputTarget = _watchmanURL + "?payload=" + URLEncoder.encode(output, "UTF-8");
-
-        URL targetURL = new URL(outputTarget);
-        HttpURLConnection connection = (HttpURLConnection)targetURL.openConnection();
-        connection.setRequestMethod("GET");
-
-        int status = connection.getResponseCode();
-
-        System.out.println( "Calling: " + outputTarget );
-        System.out.println( "REST Service responded wth " + status );
-      }
-      catch( Exception exc )
-      {
-        System.out.println( "Watchman failed due to " + exc.toString());
-        return false;
-      }
-
-      return true;
     }
 }

@@ -29,10 +29,12 @@ public class Function
     String _watchmanURL;
 
     @Funq
-    @CloudEventMapping(responseType = "hitprocessed")
+    @CloudEventMapping(responseType = "loseprocessed")
     //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
     public Uni<MessageOutput> function( String input, @Context CloudEvent cloudEvent)
     {
+      System.out.println( "RECV: " + input );
+
       return Uni.createFrom().emitter(emitter -> 
       {
         buildResponse(input, cloudEvent, emitter);
@@ -44,10 +46,10 @@ public class Function
       // Setup Watchman
       Watchman watchman = new Watchman( _watchmanURL );
 
-     System.out.println("Recv:" + input );
+      System.out.println("Recv:" + input );
 
       // Watchman
-      boolean watched = watchman.inform( "HIT:" + input );
+      boolean watched = watchman.inform( "LOSE:" + input );
       
       // Build a return packet
       MessageOutput output = new MessageOutput();
@@ -57,32 +59,11 @@ public class Function
 
       if( data != null )
       {
-        output.setBy( data.get("by"));
-        output.setAgainst( data.get("against"));
-        output.setOrigin( data.get("origin"));
-        output.setTimestamp( Long.parseLong( data.get("timestamp")));
-        output.setMatchID( data.get("matchID"));
-        output.setGameID( data.get("gameID"));
-        output.setType( data.get("type"));
-        output.setHuman( data.get("human").equals("true"));
-
-        // Calculate score delta
-        int delta = 0;
-
-        String targetShipENV = data.get("type").toUpperCase() + "_SCORE";
-        String importedScore = System.getenv(targetShipENV);
-
-        if( importedScore == null )
-        {
-          System.out.println( "Error, failed to get ENV variable for ship type " + data.get("type"));
-        }
-        else
-        {
-          delta = Integer.parseInt( importedScore );
-        }
-
-
-        // PING INFINISPAN HERE
+        output.setTimestamp( System.currentTimeMillis() );
+        output.setPlayer( data.get("player"));
+        output.setMatch( data.get("match"));
+        output.setGame( data.get("game"));
+        output.setHuman( data.get("human").equals( "true "));
       }
 
       emitter.complete(output);
@@ -97,26 +78,18 @@ public class Function
 
         JSONObject jsonPayload = (JSONObject)objPayload; 
 
-        String by = (String)jsonPayload.get("by");
-        String against = (String)jsonPayload.get("against");
-        String origin = (String)jsonPayload.get("origin");
-        long timestamp = (Long)jsonPayload.get("ts");
-        String matchID = (String)jsonPayload.get("match");
         String gameID = (String)jsonPayload.get("game");
-        String type = (String)jsonPayload.get("type");
+        String matchID = (String)jsonPayload.get("match");
+        String playerID = (String)jsonPayload.get("player");
         boolean human = (boolean)jsonPayload.get("human");
 
-        System.out.println( "(Parsed) by:" + by + " against:" + against + " origin:" + origin + " timestamp:" + timestamp + " matchID:" + matchID + " type:" + type + " gameID: " + gameID + " human: " + human );
+        System.out.println( "(Parsed) Game: " + gameID + " Match: " + matchID + " Player: " + playerID + " Human: " + human );
 
-        output.put( "by", by );
-        output.put( "against", against );
-        output.put( "origin", origin );
-        output.put( "timestamp", Long.toString(timestamp) );
-        output.put( "matchID", matchID );
-        output.put( "gameID", gameID );
-        output.put( "type", type );
-        output.put( "human", ( human ? "true" : "false"));
-
+        output.put( "player", playerID );
+        output.put( "match", matchID );
+        output.put( "game", gameID );
+        output.put( "human", ( human? "true" : "false ") );
+        
         return output;
       }
       catch( Exception exc )

@@ -29,7 +29,7 @@ public class Function
     String _watchmanURL;
 
     @Funq
-    @CloudEventMapping(responseType = "hitprocessed")
+    @CloudEventMapping(responseType = "attackprocessed")
     //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
     public Uni<MessageOutput> function( String input, @Context CloudEvent cloudEvent)
     {
@@ -70,17 +70,6 @@ public class Function
         int delta = 0;
 
         String targetShipENV = data.get("type").toUpperCase() + "_SCORE";
-        String importedScore = System.getenv(targetShipENV);
-
-        if( importedScore == null )
-        {
-          System.out.println( "Error, failed to get ENV variable for ship type " + data.get("type"));
-        }
-        else
-        {
-          delta = Integer.parseInt( importedScore );
-        }
-
 
         // PING INFINISPAN HERE
       }

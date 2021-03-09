@@ -1,0 +1,16 @@
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: trigger-win
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: win
+  subscriber:
+    ref:
+     apiVersion: serving.knative.dev/v1
+     kind: Service
+     name: battleships--win
+
