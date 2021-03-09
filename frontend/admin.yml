@@ -19,13 +19,17 @@ parameters:
     value: quay.io/redhatdemo/2021-game-admin-hq:latest
     required: true
   - name: CONTAINER_REQUEST_CPU
-    value: 300m
+    value: 250m
   - name: CONTAINER_REQUEST_MEMORY
-    value: 400Mi
+    value: 256Mi
   - name: CONTAINER_LIMIT_CPU
-    value: 1000m
+    value: 500m
   - name: CONTAINER_LIMIT_MEMORY
-    value: 2000Mi
+    value: 512Mi
+  - name: ADMIN_PASSWORD
+    value: ""
+  - name: ADMIN_USERNAME
+    value: "admin"
 
 objects:
   - apiVersion: v1
@@ -47,7 +51,12 @@ objects:
             deploymentconfig: ${APPLICATION_NAME}
         spec:
           containers:
-            - envFrom:
+            - env:
+                - name: ADMIN_USERNAME
+                  value: ${ADMIN_USERNAME}
+                - name: ADMIN_PASSWORD
+                  value: ${ADMIN_PASSWORD}
+              envFrom:
                 - configMapRef:
                     name: ${CONFIG_MAP_NAME}
               image: ${IMAGE_REPOSITORY}
@@ -79,10 +88,10 @@ objects:
         app: ${APPLICATION_NAME}
     spec:
       ports:
-        - name: 3001-tcp
-          port: 3001
+        - name: 8080-tcp
+          port: 8080
           protocol: TCP
-          targetPort: 3001
+          targetPort: 8080
       selector:
         deploymentconfig: ${APPLICATION_NAME}
 
@@ -94,7 +103,7 @@ objects:
       name: ${APPLICATION_NAME}
     spec:
       port:
-        targetPort: 3001
+        targetPort: 8080
       to:
         kind: Service
         name: ${APPLICATION_NAME}
