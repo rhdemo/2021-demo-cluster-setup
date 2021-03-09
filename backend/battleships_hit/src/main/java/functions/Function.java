@@ -69,7 +69,18 @@ public class Function
         // Calculate score delta
         int delta = 0;
 
-        String targetShipENV = data.get("type").toUpperString() + "_SCORE";
+        String targetShipENV = data.get("type").toUpperCase() + "_SCORE";
+        String importedScore = System.getenv(targetShipENV);
+
+        if( importedScore == null )
+        {
+          System.out.println( "Error, failed to get ENV variable for ship type " + data.get("type"));
+        }
+        else
+        {
+          delta = Integer.parseInt( importedScore );
+        }
+
 
         // PING INFINISPAN HERE
       }
