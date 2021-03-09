@@ -19,6 +19,7 @@ import org.uth.summit.utils.*;
 
 public class Function 
 {
+    private static final int DEFAULT_DESTROYED_SCORE = 5;
     private long start = System.currentTimeMillis();
 
     @Inject
@@ -43,67 +44,80 @@ public class Function
       // Setup Watchman
       Watchman watchman = new Watchman( _watchmanURL );
 
-     System.out.println("Recv:" + input );
+      System.out.println("Attack Event Received..." );
 
       // Watchman
-      boolean watched = watchman.inform( "HIT:" + input );
+      boolean watched = watchman.inform( "ATTACK:" + input );
       
-      // Build a return packet
-      MessageOutput output = new MessageOutput();
-
       //Process the payload
-      Map<String,String> data = processPayload( input );
-
-      if( data != null )
-      {
-        output.setBy( data.get("by"));
-        output.setAgainst( data.get("against"));
-        output.setOrigin( data.get("origin"));
-        output.setTimestamp( Long.parseLong( data.get("timestamp")));
-        output.setMatchID( data.get("matchID"));
-        output.setGameID( data.get("gameID"));
-        output.setType( data.get("type"));
-        output.setHuman( data.get("human").equals("true"));
-
-        // Calculate score delta
-        int delta = 0;
-
-        String targetShipENV = data.get("type").toUpperCase() + "_SCORE";
-
-        // PING INFINISPAN HERE
-      }
-
-      emitter.complete(output);
-    }
-
-    private Map<String,String> processPayload( String payload )
-    {
-      System.out.println( "Payload: " + payload );
-
       try
       {
+        // Build a return packet
+        MessageOutput output = new MessageOutput();
+
         Map<String,String> output = new HashMap<>();
         JsonObject message = new JsonObject(payload);
         
-        System.out.println( "GAME:" + message.getString("game"));
+        String game = message.getString("game");
+        String match = message.getString("match");
+        boolean hit = message.getBoolean("hit");
+        Long timestamp = message.getLong("ts");
+        JsonObject by = message.getJsonObject("by");
+        String uuid = by.getString("uuid");
+        boolean human = by.getBoolean("human");
+        Integer shotCount = by.getInteger("shotCount");
+        Integer consecutiveHits = by.getInteger("consecutiveHits");
+        String destroyed = message.getString("destroyed");
   
-        /** 
-        output.put( "by", by );
-        output.put( "against", against );
-        output.put( "origin", origin );
-        output.put( "timestamp", Long.toString(timestamp) );
-        output.put( "matchID", matchID );
-        output.put( "gameID", gameID );
-        output.put( "type", type );
-        output.put( "human", ( human ? "true" : "false"));
-        */
+        // Log for verbosity :-) 
+        System.out.println( "  Game: " + game );
+        System.out.println( "  Match: " + match );
+        System.out.println( "  UUID: " + uuid );
+        System.out.println( "  Hit: " + hit );
+        System.out.println( "  TS: " + ts );
+        System.out.println( "  Human: " + human );
+        System.out.println( "  ShotCount:" + shotCount );
+        System.out.println( "  ConsecutiveHits" + consecutiveHits );
+        System.out.println( "  Destroyed: " + destroyed );
 
-        return output;
+        // PING INFINISPAN HERE
+
+        // *If* we hit emit a score event for game server
+        if( hit )
+        {
+          // Calculate score delta
+          int delta = 0;
+
+          // If we haven't destroyed anything just increment the score
+          if( destroyed == null )
+          {
+            delta = 1;
+          }
+          else
+          {
+            // Otherwise we destroyed something; use (type)[uppercased]_SCORE instead
+            String targetShipENV = destroyed.toUpperCase() + "_SCORE";
+            String envValue = System.getenv(targetShipENV);
+
+            delta = ( envValue = null ? DEFAULT_DESTROYED_SCORE) : Integer.parseInt(envValue) );
+          }
+
+          output.setGame(game);
+          output.setMatch(match);
+          output.setUuid(uuid);
+          output.setTs(ts);
+          output.setDelta(new Integer(delta));
+          output.setHuman(human);
+
+          // PING INFINISPAN HERE
+
+          emitter.complete(output);
+        }
       }
       catch( Exception exc )
       {
         System.out.println("Failed to parse JSON due to " + exc.toString());
-        return null;
+        return;
       }
     }
 }

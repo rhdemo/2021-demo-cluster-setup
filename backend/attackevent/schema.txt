@@ -1,0 +1,16 @@
+{
+  hit: true/false,
+  (destroyed: type) if hit=true and ship sunk
+  origin: CellPosition,
+  game
+  match
+  ts: number,
+  by: {
+    uuid: string
+    human: true/false
+    shotCount: number
+    consecutiveHits: number
+    board: BoardMatrixType // you can ignore this
+  },
+  against: { /* same structure as "by" */ }
+}
