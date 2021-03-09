@@ -7,7 +7,7 @@ public class MessageOutput
   private String _match = null;
   private String _uuid = null;
   private Integer _delta = 0;
-  private Long _ts = 0;
+  private Long _ts;
   private boolean _human = false;
   
   // Setters

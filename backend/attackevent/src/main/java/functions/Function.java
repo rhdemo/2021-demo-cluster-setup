@@ -99,7 +99,7 @@ public class Function
             String targetShipENV = destroyed.toUpperCase() + "_SCORE";
             String envValue = System.getenv(targetShipENV);
 
-            delta = ( envValue = null ? DEFAULT_DESTROYED_SCORE : Integer.parseInt(envValue) );
+            delta = ( envValue == null ? DEFAULT_DESTROYED_SCORE : Integer.parseInt(envValue) );
           }
 
           output.setGame(game);
