@@ -79,6 +79,8 @@ public class Function
 
     private Map<String,String> processPayload( String payload )
     {
+      System.out.println( "Payload: " + payload );
+
       try
       {
         Map<String,String> output = new HashMap<>();
