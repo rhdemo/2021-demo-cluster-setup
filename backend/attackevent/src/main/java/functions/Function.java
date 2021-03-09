@@ -86,6 +86,8 @@ public class Function
         Map<String,String> output = new HashMap<>();
         Object objPayload = new JSONParser().parse(payload);
 
+        System.out.println( objPayload );
+
         JSONObject jsonPayload = (JSONObject)objPayload; 
 
         String by = (String)jsonPayload.get("by");
