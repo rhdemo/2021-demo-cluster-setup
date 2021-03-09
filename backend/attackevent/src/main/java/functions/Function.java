@@ -55,8 +55,7 @@ public class Function
         // Build a return packet
         MessageOutput output = new MessageOutput();
 
-        Map<String,String> output = new HashMap<>();
-        JsonObject message = new JsonObject(payload);
+        JsonObject message = new JsonObject(input);
         
         String game = message.getString("game");
         String match = message.getString("match");
