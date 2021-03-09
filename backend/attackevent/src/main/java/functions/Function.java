@@ -65,7 +65,7 @@ public class Function
         String uuid = by.getString("uuid");
         boolean human = by.getBoolean("human");
         Integer shotCount = by.getInteger("shotCount");
-        Integer consecutiveHits = by.getInteger("consecutiveHits");
+        Integer consecutiveHits = by.getInteger("consecutiveHitsCount");
         String destroyed = message.getString("destroyed");
   
         // Log for verbosity :-) 
@@ -75,8 +75,8 @@ public class Function
         System.out.println( "  Hit: " + hit );
         System.out.println( "  TS: " + ts );
         System.out.println( "  Human: " + human );
-        System.out.println( "  ShotCount:" + shotCount );
-        System.out.println( "  ConsecutiveHits" + consecutiveHits );
+        System.out.println( "  ShotCount: " + shotCount );
+        System.out.println( "  ConsecutiveHits: " + consecutiveHits );
         System.out.println( "  Destroyed: " + destroyed );
 
         // PING INFINISPAN HERE
