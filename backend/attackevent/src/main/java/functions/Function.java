@@ -85,7 +85,7 @@ public class Function
         Map<String,String> output = new HashMap<>();
         JsonObject message = new JsonObject(payload);
         
-        System.out.println( "GAME:" + message.get("game"));
+        System.out.println( "GAME:" + message.getString("game"));
   
         /** 
         output.put( "by", by );
