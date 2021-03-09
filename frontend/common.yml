@@ -14,8 +14,6 @@ parameters:
   - name: CONFIG_MAP_NAME
     value: 2021-demo-common
     required: true
-  - name: ADMIN_USERNAME
-    value: "admin"
   - name: DATAGRID_HOST
     value: datagrid-service.datagrid-demo.svc.cluster.local
     required: true
@@ -35,7 +33,7 @@ parameters:
     value: dev
     required: true
   - name: HTTP_PORT
-    value: '8080'
+    value: "8080"
     required: true
 
 
@@ -53,10 +51,10 @@ objects:
     metadata:
       name: ${CONFIG_MAP_NAME}
     data:
-      ADMIN_USERNAME: ${ADMIN_USERNAME}
       DATAGRID_HOST: ${DATAGRID_HOST}
       DATAGRID_HOTROD_PORT: ${DATAGRID_HOTROD_PORT}
       DATAGRID_CONSOLE_PORT: ${DATAGRID_CONSOLE_PORT}
       DATAGRID_CONSOLE_REST_PORT: ${DATAGRID_CONSOLE_REST_PORT}
       CLUSTER_NAME: ${CLUSTER_NAME}
       NODE_ENV: ${NODE_ENV}
+      HTTP_PORT: ${HTTP_PORT}

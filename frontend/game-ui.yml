@@ -21,11 +21,11 @@ parameters:
   - name: CONTAINER_REQUEST_CPU
     value: 200m
   - name: CONTAINER_REQUEST_MEMORY
-    value: 200Mi
+    value: 256Mi
   - name: CONTAINER_LIMIT_CPU
     value: 500m
   - name: CONTAINER_LIMIT_MEMORY
-    value: 1000Mi
+    value: 512Mi
   - name: ROLLOUT_STRATEGY
     value: "Rolling"
     required: true
@@ -53,9 +53,6 @@ objects:
             - image: ${IMAGE_REPOSITORY}
               imagePullPolicy: Always
               name: ${APPLICATION_NAME}
-              env:
-                - name: HTTP_PORT
-                  value: '8080'
               ports:
                 - containerPort: 8080
                   name: http

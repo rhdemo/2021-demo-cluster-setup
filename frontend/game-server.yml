@@ -29,14 +29,18 @@ parameters:
   - name: CONTAINER_REQUEST_CPU
     value: 500m
   - name: CONTAINER_REQUEST_MEMORY
-    value: 500Mi
+    value: 512Mi
   - name: CONTAINER_LIMIT_CPU
     value: 1000m
   - name: CONTAINER_LIMIT_MEMORY
-    value: 2000Mi
+    value: 1024Mi
   - name: ROLLOUT_STRATEGY
     value: "Rolling"
     required: true
+  - name: AWS_ACCESS_KEY_ID
+    value: ""
+  - name: AWS_SECRET_ACCESS_KEY
+    value: ""
 
 
 objects:
@@ -60,6 +64,10 @@ objects:
         spec:
           containers:
             - env:
+              - name: AWS_ACCESS_KEY_ID
+                value: ${AWS_ACCESS_KEY_ID}
+              - name: AWS_SECRET_ACCESS_KEY
+                value: ${AWS_SECRET_ACCESS_KEY}
               - name: AI_AGENT_SERVER_URL
                 value: http://ai-agent-server.ai.svc.cluster.local:8080/agent
               envFrom:
