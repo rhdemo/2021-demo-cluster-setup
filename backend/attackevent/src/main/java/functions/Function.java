@@ -69,7 +69,7 @@ public class Function
         // Calculate score delta
         int delta = 0;
 
-        String targetShipENV = data.get("type").toUpperString() + "_SCORE";
+        String targetShipENV = data.get("type").toUpperCase() + "_SCORE";
 
         // PING INFINISPAN HERE
       }
