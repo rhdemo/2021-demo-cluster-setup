@@ -17,7 +17,7 @@ import java.util.*;
 
 import org.uth.summit.utils.*;
 
-public class Function 
+public class AttackEvent 
 {
     private static final int DEFAULT_DESTROYED_SCORE = 5;
     private long start = System.currentTimeMillis();
@@ -43,6 +43,7 @@ public class Function
     {
       // Setup Watchman
       Watchman watchman = new Watchman( _watchmanURL );
+meh
 
       System.out.println("Attack Event Received..." );
 
@@ -56,7 +57,7 @@ public class Function
         MessageOutput output = new MessageOutput();
 
         JsonObject message = new JsonObject(input);
-        
+
         String game = message.getString("game");
         String match = message.getString("match");
         boolean hit = message.getBoolean("hit");
