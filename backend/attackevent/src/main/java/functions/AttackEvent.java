@@ -43,7 +43,6 @@ public class AttackEvent
     {
       // Setup Watchman
       Watchman watchman = new Watchman( _watchmanURL );
-meh
 
       System.out.println("Attack Event Received..." );
 
