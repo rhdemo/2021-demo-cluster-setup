@@ -105,10 +105,10 @@ public class AttackEvent
           output.setMatch(match);
           output.setUuid(uuid);
           output.setTs(ts);
-          output.setDelta(new Integer(delta));
+          output.setDelta(Integer.valueOf(delta));
           output.setHuman(human);
 
-          // PING INFINISPAN HERE
+          // PING INFINISPAN HERE...
 
           emitter.complete(output);
         }
