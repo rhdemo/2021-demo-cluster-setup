@@ -112,7 +112,7 @@ public class AttackEvent
           output.setHuman(human);
 
           // Post to Scoring Service
-          String compositePostURL = _scoringServiceURL + "/scoring/" + game + "/" + match + "/" + uuid + "?delta=" + delta + "&human=" + human + "&timestamp=" + ts;
+          String compositePostURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + uuid + "?delta=" + delta + "&human=" + human + "&timestamp=" + ts;
 
           Postman postman = new Postman( compositePostURL );
           if( !( postman.deliver("dummy")))
