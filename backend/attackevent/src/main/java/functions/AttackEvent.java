@@ -28,6 +28,9 @@ public class AttackEvent
     @ConfigProperty(name = "WATCHMAN")
     String _watchmanURL;
 
+    @ConfigProperty(name = "SCORINGSERVICE")
+    String _scoringServiceURL;
+
     @Funq
     @CloudEventMapping(responseType = "attackprocessed")
     //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
@@ -81,7 +84,7 @@ public class AttackEvent
 
         // PING INFINISPAN HERE
 
-        // *If* we hit emit a score event for game server
+        // *If* we hit emit a score event for game server and scoring service
         if( hit )
         {
           // Calculate score delta
@@ -108,7 +111,14 @@ public class AttackEvent
           output.setDelta(Integer.valueOf(delta));
           output.setHuman(human);
 
-          // PING INFINISPAN HERE...
+          // Post to Scoring Service
+          String compositePostURL = _scoringServiceURL + "/scoring/" + game + "/" + match + "/" + uuid + "?delta=" + delta + "&human=" + human + "&timestamp=" + ts;
+
+          Postman postman = new Postman( compositePostURL );
+          if( !( postman.deliver("dummy")))
+          {
+            System.out.println( "Failed to update Scoring Service");
+          }
 
           emitter.complete(output);
         }
