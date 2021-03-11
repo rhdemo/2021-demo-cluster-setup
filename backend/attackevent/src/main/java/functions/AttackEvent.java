@@ -50,9 +50,6 @@ public class AttackEvent
 
       System.out.println("Attack Event Received..." );
 
-      // Watchman
-      boolean watched = watchman.inform( "ATTACK:" + input );
-      
       //Process the payload
       try
       {
@@ -72,6 +69,9 @@ public class AttackEvent
         Integer consecutiveHits = by.getInteger("consecutiveHitsCount");
         String destroyed = message.getString("destroyed");
   
+        // Watchman
+        boolean watched = watchman.inform( "[ATTACK] match:" + match + " game:" + game + " hit:" + hit + " uuid:" + uuid + " human:" + human + " destroyed: " + destroyed );
+      
         // Log for verbosity :-) 
         System.out.println( "  Game: " + game );
         System.out.println( "  Match: " + match );
