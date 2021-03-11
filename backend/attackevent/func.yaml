@@ -11,7 +11,7 @@ builderMap:
   native: quay.io/boson/faas-quarkus-native-builder
 envVars:
   SCORINGSERVICE: http://scoring-service-battleships-scoring.apps.summit-dev-aws.m7o7.p1.openshiftapps.com/
-  WATCHMAN: http://watchman-battelships-backend.apps.summit-dev-aws.m7o7.p1.openshiftapps.com/watch
+  WATCHMAN: http://watchman-battleships-backend.apps.summit-dev-aws.m7o7.p1.openshiftapps.com/watch
   CARRIER_SCORE: 250
   DESTROYER_SCORE: 50
   SUBMARINE_SCORE: 100
