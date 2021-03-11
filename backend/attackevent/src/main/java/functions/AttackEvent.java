@@ -19,7 +19,8 @@ import org.uth.summit.utils.*;
 
 public class AttackEvent 
 {
-    private static final int DEFAULT_DESTROYED_SCORE = 5;
+    private static final int DEFAULT_DESTROYED_SCORE = 100;
+    private static final int DEFAULT_HIT_SCORE = 5;
     private long start = System.currentTimeMillis();
 
     @Inject
@@ -90,10 +91,11 @@ public class AttackEvent
           // Calculate score delta
           int delta = 0;
 
-          // If we haven't destroyed anything just increment the score
+          // If we haven't destroyed anything just increment the score using the HIT_SCORE if it exists
           if( destroyed == null )
           {
-            delta = 1;
+            String envValue = System.getenv("HIT_SCORE");
+            delta = ( envValue == null ? DEFAULT_HIT_SCORE : Integer.parseInt(envValue) );
           }
           else
           {
