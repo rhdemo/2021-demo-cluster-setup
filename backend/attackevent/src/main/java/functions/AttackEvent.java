@@ -85,7 +85,7 @@ public class AttackEvent
 
         // Build SHOTS rest URL here as we have all info
         // Format /shot/{game}/{match}/{user}/{ts}?type=[HIT,MISS,SUNK]&human={human}
-        String type = ( !hit ? "MISS" : ( destroyed ? "SUNK" : "HIT "));
+        String type = ( !hit ? "MISS" : ( destroyed != null ? "SUNK" : "HIT"));
         String compositeShotsURL = _scoringServiceURL + "shot/" + game + "/" + match + "/" + uuid + "/" + ts + "?type=" + type + "&human=" + human;
 
         // Update the SHOTS cache
