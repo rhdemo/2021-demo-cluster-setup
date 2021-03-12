@@ -83,9 +83,19 @@ public class AttackEvent
         System.out.println( "  ConsecutiveHits: " + consecutiveHits );
         System.out.println( "  Destroyed: " + destroyed );
 
-        // PING INFINISPAN HERE
+        // Build SHOTS rest URL here as we have all info
+        // Format /shot/{game}/{match}/{user}/{ts}?type=[HIT,MISS,SUNK]&human={human}
+        String type = ( !hit ? "MISS" : ( destroyed ? "SUNK" : "HIT "));
+        String compositeShotsURL = _scoringServiceURL + "shot/" + game + "/" + match + "/" + uuid + "/" + ts + "?type=" + type + "&human=" + human;
 
-        // *If* we hit emit a score event for game server and scoring service
+        // Update the SHOTS cache
+        Postman postman = new Postman( compositeShotsURL );
+        if( !( postman.deliver("dummy")))
+        {
+          System.out.println( "Failed to update SHOTS cache");
+        }
+
+        // *If* we hit emit a score event for game server and scoring service cache
         if( hit )
         {
           // Calculate score delta
@@ -116,11 +126,13 @@ public class AttackEvent
           // Post to Scoring Service
           String compositePostURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + uuid + "?delta=" + delta + "&human=" + human + "&timestamp=" + ts;
 
-          Postman postman = new Postman( compositePostURL );
+          postman = new Postman( compositePostURL );
           if( !( postman.deliver("dummy")))
           {
             System.out.println( "Failed to update Scoring Service");
           }
+
+          // Post hit to SHOTS scoring-service
 
           emitter.complete(output);
         }
