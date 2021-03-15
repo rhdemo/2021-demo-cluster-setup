@@ -1,0 +1,22 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  labels:
+    app: ks-matches
+    app.kubernetes.io/component: ks-matches
+    app.kubernetes.io/instance: ks-matches
+  name: ks-matches
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+  - annotations:
+      openshift.io/imported-from: quay.io/redhatdemo/2021-kafka-streams-match-aggregator
+    from:
+      kind: DockerImage
+      name: quay.io/redhatdemo/2021-kafka-streams-match-aggregator
+    generation: 2
+    importPolicy: {}
+    name: latest
+    referencePolicy:
+      type: Source

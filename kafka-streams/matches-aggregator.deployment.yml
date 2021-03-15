@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ks-matches
+  labels:
+    app: ks-matches
+    app.kubernetes.io/component: ks-matches
+    app.kubernetes.io/instance: ks-matches
+    app.openshift.io/runtime: quarkus
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      deployment: ks-matches
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        deployment: ks-matches
+    spec:
+      containers:
+      - envFrom:
+        - secretRef:
+            name: kafka-streams-secret
+        - configMapRef:
+            name: kafka-streams-config
+        image: quay.io/redhatdemo/2021-kafka-streams-match-aggregator
+        imagePullPolicy: IfNotPresent
+        name: ks-matches
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

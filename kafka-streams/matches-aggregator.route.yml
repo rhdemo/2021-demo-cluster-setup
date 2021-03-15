@@ -1,0 +1,19 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: ks-matches
+    app.kubernetes.io/component: ks-matches
+    app.kubernetes.io/instance: ks-matches
+  name: ks-matches
+spec:
+  port:
+    targetPort: 8080-tcp
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: ks-matches
+    weight: 100
+  wildcardPolicy: None

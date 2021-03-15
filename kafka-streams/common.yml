@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Template
+
+labels:
+  application: kafka-streams-config
+
+metadata:
+  name: kafka-streams-config
+
+parameters:
+  - name: SECRET_NAME
+    value: kafka-streams-secret
+  - name: CONFIG_MAP_NAME
+    value: kafka-streams-config
+  - name: LOG_LEVEL
+    required: true
+  - name: KAFKA_SVC_USERNAME
+    required: true
+  - name: KAFKA_SVC_PASSWORD
+    required: true
+  - name: KAFKA_BOOTSTRAP_URL
+    required: true
+  - name: CLUSTER_NAME
+    required: true
+
+objects:
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: ${SECRET_NAME}
+    data:
+    stringData:
+      KAFKA_SVC_USERNAME: ${KAFKA_SVC_USERNAME}
+      KAFKA_SVC_PASSWORD: ${KAFKA_SVC_PASSWORD}
+
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: ${CONFIG_MAP_NAME}
+    data:
+      CLUSTER_NAME: ${CLUSTER_NAME}
+      LOG_LEVEL: ${LOG_LEVEL}
+      KAFKA_BOOTSTRAP_URL: ${KAFKA_BOOTSTRAP_URL}
