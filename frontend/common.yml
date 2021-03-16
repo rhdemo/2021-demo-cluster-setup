@@ -15,7 +15,7 @@ parameters:
     value: 2021-demo-common
     required: true
   - name: DATAGRID_HOST
-    value: datagrid-service.datagrid-demo.svc.cluster.local
+    value: datagrid.datagrid.svc.cluster.local
     required: true
   - name: DATAGRID_HOTROD_PORT
     value: "11222"

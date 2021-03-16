@@ -1,5 +1,5 @@
 # Datagrid Service
-Scripts to install Infinispan 12.0.x in the `datagrid-demo` project.
+Scripts to install Infinispan 12.0.x in the `datagrid` project.
 
 ## Default Configuration
 - Uses Infinispan 12.0.x Operator
