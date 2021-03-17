@@ -11,6 +11,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.vertx.core.json.JsonObject;
 
+import java.time.LocalDateTime;
 import javax.inject.Inject;
 import java.net.*;
 import java.util.*;
@@ -48,7 +49,7 @@ public class MatchEndEvent
       // Setup Watchman
       Watchman watchman = new Watchman( _watchmanURL );
 
-      System.out.println("Attack Event Received..." );
+      System.out.println("Match End Event Received..." );
 
       //Process the payload
       try
@@ -60,82 +61,54 @@ public class MatchEndEvent
 
         String game = message.getString("game");
         String match = message.getString("match");
-        boolean hit = message.getBoolean("hit");
-        Long ts = message.getLong("ts");
-        JsonObject by = message.getJsonObject("by");
-        String uuid = by.getString("uuid");
-        boolean human = by.getBoolean("human");
-        Integer shotCount = by.getInteger("shotCount");
-        Integer consecutiveHits = by.getInteger("consecutiveHitsCount");
-        String destroyed = message.getString("destroyed");
+        JsonObject winner = message.getJsonObject("winner");
+        JsonObject loser = message.getJsonObject("loser");
+        String winnerUsername = winner.getString("username");
+        String winnerUuid = winner.getString("uuid");
+        boolean winnerHuman = winner.getBoolean("human");
+        String loserUsername = loser.getString("username");
+        String loserUuid = loser.getString("uuid");
+        boolean loserHuman = loser.getBoolean("human");
   
         // Watchman
-        boolean watched = watchman.inform( "[ATTACK] match:" + match + " game:" + game + " hit:" + hit + " uuid:" + uuid + " human:" + human + " destroyed: " + ( destroyed == null ? "false" : "true" ));
+        LocalDateTime now = LocalDateTime.now();
+        boolean watched = watchman.inform( "[MATCH-END] (" + now.toString() + ") match:" + match + " game:" + game + " Winner: " + winnerUsername + " " + ( winnerHuman ? "(HUME)" : "(BOTTY)" ) + " Loser: " + loserUsername + " " + ( loserHuman ? "(HUME)" : "(BOTTY)") );
       
         // Log for verbosity :-) 
         System.out.println( "  Game: " + game );
         System.out.println( "  Match: " + match );
-        System.out.println( "  UUID: " + uuid );
-        System.out.println( "  Hit: " + hit );
-        System.out.println( "  TS: " + ts );
-        System.out.println( "  Human: " + human );
-        System.out.println( "  ShotCount: " + shotCount );
-        System.out.println( "  ConsecutiveHits: " + consecutiveHits );
-        System.out.println( "  Destroyed: " + destroyed );
+        System.out.println( "    WINNER: " + winnerUsername + " " + ( winnerHuman ? "(HUME)" : "(BOTTY)" ) );
+        System.out.println( "    LOSER: " + loserUsername + " " + ( loserHuman ? "(HUME)" : "(BOTTY)") );
+        
+        // Build WIN/LOSS rest URL here as we have all info
+        // Format /scoring/(game)/(match)/(uuid)/win?timestamp
+        // Format /scoring/(game)/(match)/(uuid)/lose?timestamp
+        String compositeWinURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + winnerUuid + "?" + System.currentTimeMillis();
+        String compositeLoseURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + loserUuid + "?" + System.currentTimeMillis();
 
-        // Build SHOTS rest URL here as we have all info
-        // Format /shot/{game}/{match}/{user}/{ts}?type=[HIT,MISS,SUNK]&human={human}
-        String type = ( !hit ? "MISS" : ( destroyed != null ? "SUNK" : "HIT"));
-        String compositeShotsURL = _scoringServiceURL + "shot/" + game + "/" + match + "/" + uuid + "/" + ts + "?type=" + type + "&human=" + human;
-
-        // Update the SHOTS cache
-        Postman postman = new Postman( compositeShotsURL );
+        // Update the WIN/LOSS cache
+        Postman postman = new Postman( compositeWinURL );
         if( !( postman.deliver("dummy")))
         {
-          System.out.println( "Failed to update SHOTS cache");
+          System.out.println( "Failed to update WIN cache");
         }
 
-        // *If* we hit emit a score event for game server and scoring service cache
-        if( hit )
+        postman = new Postman( compositeLoseURL );
+        if( !( postman.deliver("dummy")))
         {
-          // Calculate score delta
-          int delta = 0;
-
-          // If we haven't destroyed anything just increment the score using the HIT_SCORE if it exists
-          if( destroyed == null )
-          {
-            String envValue = System.getenv("HIT_SCORE");
-            delta = ( envValue == null ? DEFAULT_HIT_SCORE : Integer.parseInt(envValue) );
-          }
-          else
-          {
-            // Otherwise we destroyed something; use (type)[uppercased]_SCORE instead
-            String targetShipENV = destroyed.toUpperCase() + "_SCORE";
-            String envValue = System.getenv(targetShipENV);
-
-            delta = ( envValue == null ? DEFAULT_DESTROYED_SCORE : Integer.parseInt(envValue) );
-          }
-
-          output.setGame(game);
-          output.setMatch(match);
-          output.setUuid(uuid);
-          output.setTs(ts);
-          output.setDelta(Integer.valueOf(delta));
-          output.setHuman(human);
-
-          // Post to Scoring Service
-          String compositePostURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + uuid + "?delta=" + delta + "&human=" + human + "&timestamp=" + ts;
-
-          postman = new Postman( compositePostURL );
-          if( !( postman.deliver("dummy")))
-          {
-            System.out.println( "Failed to update Scoring Service");
-          }
-
-          // Post hit to SHOTS scoring-service
-
-          emitter.complete(output);
+          System.out.println( "Failed to update LOSE cache");
         }
+
+        output.setGame(game);
+        output.setMatch(match);
+        output.setWinnerUsername( winnerUsername );
+        output.setWinnerUuid( winnerUuid );
+        output.setWinnerHuman( winnerHuman );
+        output.setLoserUsername( loserUsername );
+        output.setLoserUuid( loserUuid );
+        output.setLoserHuman( loserHuman );
+        
+        emitter.complete(output);
       }
       catch( Exception exc )
       {

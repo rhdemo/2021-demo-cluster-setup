@@ -1,9 +1,6 @@
 package functions;
 
-      // {\"game\":\"BDP7pmbAAq_mvTPlAFAi4\",\"match\":\"DRSEcJb74dUQrFEredBZw\",\"playerA\":{\"username\":\"Root Knife\",\"uuid\":\"p28_Coyrl0GgcIlYATY4w\",\"human\":true,\"board
-
-
-// POJO for emitted cloud event for Attack/Score
+// POJO for emitted cloud event for Match Start
 public class MessageOutput
 {
   private String _game = null;

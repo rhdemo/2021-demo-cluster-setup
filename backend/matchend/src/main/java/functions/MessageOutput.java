@@ -1,28 +1,35 @@
 package functions;
 
-// POJO for emitted cloud event for Attack/Score
+// POJO for emitted cloud event for Match End
 public class MessageOutput
 {
   private String _game = null;
   private String _match = null;
-  private String _uuid = null;
-  private Integer _delta = 0;
-  private Long _ts;
-  private boolean _human = false;
+  private String _winnerUsername = null;
+  private String _loserUsername = null;
+  private String _winnerUuid = null;
+  private String _loserUuid = null;
+  private boolean _winnerHuman = true;
+  private boolean _loserHuman = true;
   
   // Setters
   public void setGame( String game ) { _game = game; }
   public void setMatch( String match ) { _match = match; }
-  public void setUuid( String uuid ) { _uuid = uuid; }
-  public void setTs( Long ts ) { _ts = ts; }
-  public void setHuman( boolean human ) { _human = human; }
-  public void setDelta( Integer delta ) { _delta = delta; }
+  public void setWinnerUsername( String winnerUsername ) { _winnerUsername = winnerUsername; }
+  public void setLoserUsername( String loserUsername ) { _loserUsername = loserUsername; }
+  public void setWinnerUuid( String winnerUuid ) { _winnerUuid = winnerUuid; }
+  public void setLoserUuid( String loserUuid ) { _loserUuid = loserUuid; }
+  public void setWinnerHuman( boolean winnerHuman ) { _winnerHuman = winnerHuman; }
+  public void setLoserHuman( boolean loserHuman ) { _loserHuman = loserHuman; }
   
   // Accessors
   public String getGame() { return _game; }
   public String getMatch() { return _match; }
-  public String getUuid() { return _uuid; }
-  public Long getTs() { return _ts; }
-  public Integer getDelta() { return _delta; }
-  public boolean getHuman() { return _human; }
+  public String getWinnerUsername() { return _winnerUsername; }
+  public String getLoserUsername() { return _loserUsername; }
+  public String getWinnerUuid() { return _winnerUuid; }
+  public String getLoserUuid() { return _loserUuid; }
+  public boolean getWinnerHuman() { return _winnerHuman; }
+  public boolean getLoserHuman() { return _loserHuman; }
+
 }

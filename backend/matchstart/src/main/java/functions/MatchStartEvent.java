@@ -11,7 +11,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.vertx.core.json.JsonObject;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import javax.inject.Inject;
 import java.net.*;
 import java.util.*;
@@ -72,7 +72,7 @@ public class MatchStartEvent
         boolean playerBHuman = playerB.getBoolean("human");
         
         // Watchman
-        LocalTime now = LocalTime.now();
+        LocalDateTime now = LocalDateTime.now();
         boolean watched = watchman.inform( "[MATCH-START] (" + now.toString() + ") " + playerAUsername + "(" + ( playerAHuman ? "HUME" : "BOTTY" ) + ") vs " + playerBUsername + "(" + ( playerBHuman ? "HUME" : "BOTTY" ) + ")");
       
         // Log for verbosity :-) 
