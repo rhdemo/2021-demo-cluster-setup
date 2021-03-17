@@ -11,6 +11,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.vertx.core.json.JsonObject;
 
+import java.time.LocalTime;
 import javax.inject.Inject;
 import java.net.*;
 import java.util.*;
@@ -48,7 +49,7 @@ public class MatchStartEvent
       // Setup Watchman
       Watchman watchman = new Watchman( _watchmanURL );
 
-      System.out.println("Attack Event Received..." );
+      System.out.println("Match Start Event Received..." );
 
       //Process the payload
       try
@@ -61,81 +62,37 @@ public class MatchStartEvent
         String game = message.getString("game");
         String match = message.getString("match");
         boolean hit = message.getBoolean("hit");
-        Long ts = message.getLong("ts");
-        JsonObject by = message.getJsonObject("by");
-        String uuid = by.getString("uuid");
-        boolean human = by.getBoolean("human");
-        Integer shotCount = by.getInteger("shotCount");
-        Integer consecutiveHits = by.getInteger("consecutiveHitsCount");
-        String destroyed = message.getString("destroyed");
-  
+
+        JsonObject playerA = message.getJsonObject("playerA");
+        String playerAUsername = playerA.getString("username");
+        String playerAUuid = playerA.getString("uuid");
+        boolean playerAHuman = playerA.getBoolean("human");
+        
+        JsonObject playerB = message.getJsonObject("playerB");
+        String playerBUsername = playerB.getString("username");
+        String playerBUuid = playerB.getString("uuid");
+        boolean playerBHuman = playerB.getBoolean("human");
+        
         // Watchman
-        boolean watched = watchman.inform( "[ATTACK] match:" + match + " game:" + game + " hit:" + hit + " uuid:" + uuid + " human:" + human + " destroyed: " + ( destroyed == null ? "false" : "true" ));
+        LocalTime now = LocalTime.now();
+        boolean watched = watchman.inform( "[MATCH-START] (" + now.toString() + ") " + playerAUsername + "(" + ( playerAHuman ? "HUME" : "BOTTY" ) + ") vs " + playerBUsername + "(" + ( playerBHuman ? "HUME" : "BOTTY" ) + ")");
       
         // Log for verbosity :-) 
         System.out.println( "  Game: " + game );
         System.out.println( "  Match: " + match );
-        System.out.println( "  UUID: " + uuid );
-        System.out.println( "  Hit: " + hit );
-        System.out.println( "  TS: " + ts );
-        System.out.println( "  Human: " + human );
-        System.out.println( "  ShotCount: " + shotCount );
-        System.out.println( "  ConsecutiveHits: " + consecutiveHits );
-        System.out.println( "  Destroyed: " + destroyed );
+        System.out.println( "  PlayerA:" );
+        System.out.println( "    " + playerAUsername + " (" + ( playerAHuman ? "(HUME)" : "(BOTTY)") + ")");
+        System.out.println( "  PlayerB:" );
+        System.out.println( "    " + playerBUsername + " (" + ( playerBHuman ? "(HUME)" : "(BOTTY)") + ")");
+        
+        output.setGame(game);
+        output.setMatch(match);
+        output.setAusername(playerAUsername);
+        output.setBusername(playerBUsername);
+        output.setAhuman(playerAHuman);
+        output.setBhuman(playerBHuman);
 
-        // Build SHOTS rest URL here as we have all info
-        // Format /shot/{game}/{match}/{user}/{ts}?type=[HIT,MISS,SUNK]&human={human}
-        String type = ( !hit ? "MISS" : ( destroyed != null ? "SUNK" : "HIT"));
-        String compositeShotsURL = _scoringServiceURL + "shot/" + game + "/" + match + "/" + uuid + "/" + ts + "?type=" + type + "&human=" + human;
-
-        // Update the SHOTS cache
-        Postman postman = new Postman( compositeShotsURL );
-        if( !( postman.deliver("dummy")))
-        {
-          System.out.println( "Failed to update SHOTS cache");
-        }
-
-        // *If* we hit emit a score event for game server and scoring service cache
-        if( hit )
-        {
-          // Calculate score delta
-          int delta = 0;
-
-          // If we haven't destroyed anything just increment the score using the HIT_SCORE if it exists
-          if( destroyed == null )
-          {
-            String envValue = System.getenv("HIT_SCORE");
-            delta = ( envValue == null ? DEFAULT_HIT_SCORE : Integer.parseInt(envValue) );
-          }
-          else
-          {
-            // Otherwise we destroyed something; use (type)[uppercased]_SCORE instead
-            String targetShipENV = destroyed.toUpperCase() + "_SCORE";
-            String envValue = System.getenv(targetShipENV);
-
-            delta = ( envValue == null ? DEFAULT_DESTROYED_SCORE : Integer.parseInt(envValue) );
-          }
-
-          output.setGame(game);
-          output.setMatch(match);
-          output.setUuid(uuid);
-          output.setTs(ts);
-          output.setDelta(Integer.valueOf(delta));
-          output.setHuman(human);
-
-          // Post to Scoring Service
-          String compositePostURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + uuid + "?delta=" + delta + "&human=" + human + "&timestamp=" + ts;
-
-          postman = new Postman( compositePostURL );
-          if( !( postman.deliver("dummy")))
-          {
-            System.out.println( "Failed to update Scoring Service");
-          }
-
-          // Post hit to SHOTS scoring-service
-
-          emitter.complete(output);
-        }
+        emitter.complete(output);
       }
       catch( Exception exc )
       {
