@@ -17,7 +17,7 @@ import java.util.*;
 
 import org.uth.summit.utils.*;
 
-public class AttackEvent 
+public class MatchEndEvent 
 {
     private static final int DEFAULT_DESTROYED_SCORE = 100;
     private static final int DEFAULT_HIT_SCORE = 5;
@@ -29,11 +29,8 @@ public class AttackEvent
     @ConfigProperty(name = "WATCHMAN")
     String _watchmanURL;
 
-    @ConfigProperty(name = "SCORINGSERVICE")
-    String _scoringServiceURL;
-
     @Funq
-    @CloudEventMapping(responseType = "attackprocessed")
+    @CloudEventMapping(responseType = "matchendprocessed")
     //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
     public Uni<MessageOutput> function( String input, @Context CloudEvent cloudEvent)
     {
