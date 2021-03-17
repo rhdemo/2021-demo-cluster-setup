@@ -29,6 +29,9 @@ public class MatchStartEvent
     @ConfigProperty(name = "WATCHMAN")
     String _watchmanURL;
 
+    @ConfigProperty(name = "SCORINGSERVICE")
+    String _scoringServiceURL;
+
     @Funq
     @CloudEventMapping(responseType = "matchstartprocessed")
     //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)

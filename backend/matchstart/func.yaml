@@ -10,4 +10,5 @@ builderMap:
   jvm: quay.io/boson/faas-quarkus-jvm-builder
   native: quay.io/boson/faas-quarkus-native-builder
 envVars:
+  SCORINGSERVICE: http://scoring-service-battleships-scoring.apps.summit-dev-aws.m7o7.p1.openshiftapps.com/
   WATCHMAN: http://watchman-battleships-backend.apps.summit-dev-aws.m7o7.p1.openshiftapps.com/watch
