@@ -50,6 +50,7 @@ public class MatchStartEvent
       Watchman watchman = new Watchman( _watchmanURL );
 
       System.out.println("Match Start Event Received..." );
+      System.out.println(input);
 
       //Process the payload
       try
