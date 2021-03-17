@@ -20,8 +20,6 @@ import org.uth.summit.utils.*;
 
 public class MatchStartEvent 
 {
-    private static final int DEFAULT_DESTROYED_SCORE = 100;
-    private static final int DEFAULT_HIT_SCORE = 5;
     private long start = System.currentTimeMillis();
 
     @Inject
@@ -81,9 +79,9 @@ public class MatchStartEvent
         System.out.println( "  Game: " + game );
         System.out.println( "  Match: " + match );
         System.out.println( "  PlayerA:" );
-        System.out.println( "    " + playerAUsername + " (" + ( playerAHuman ? "(HUME)" : "(BOTTY)") + ")");
+        System.out.println( "    " + playerAUsername + " " + ( playerAHuman ? "(HUME)" : "(BOTTY)"));
         System.out.println( "  PlayerB:" );
-        System.out.println( "    " + playerBUsername + " (" + ( playerBHuman ? "(HUME)" : "(BOTTY)") + ")");
+        System.out.println( "    " + playerBUsername + " " + ( playerBHuman ? "(HUME)" : "(BOTTY)"));
         
         output.setGame(game);
         output.setMatch(match);
