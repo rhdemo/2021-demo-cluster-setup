@@ -62,7 +62,6 @@ public class MatchStartEvent
 
         String game = message.getString("game");
         String match = message.getString("match");
-        boolean hit = message.getBoolean("hit");
 
         JsonObject playerA = message.getJsonObject("playerA");
         String playerAUsername = playerA.getString("username");
