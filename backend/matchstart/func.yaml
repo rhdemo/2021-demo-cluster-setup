@@ -1,0 +1,19 @@
+name: attack
+namespace: ""
+runtime: quarkus
+image: quay.io/ilawson/attack
+imageDigest: ""
+trigger: events
+builder: quay.io/boson/faas-quarkus-jvm-builder
+builderMap:
+  default: quay.io/boson/faas-quarkus-jvm-builder
+  jvm: quay.io/boson/faas-quarkus-jvm-builder
+  native: quay.io/boson/faas-quarkus-native-builder
+envVars:
+  SCORINGSERVICE: http://scoring-service-battleships-scoring.apps.summit-dev-aws.m7o7.p1.openshiftapps.com/
+  WATCHMAN: http://watchman-battleships-backend.apps.summit-dev-aws.m7o7.p1.openshiftapps.com/watch
+  CARRIER_SCORE: 250
+  DESTROYER_SCORE: 50
+  SUBMARINE_SCORE: 100
+  BATTLESHIP_SCORE: 200
+  HIT_SCORE: 5
