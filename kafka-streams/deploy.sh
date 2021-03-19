@@ -24,3 +24,14 @@ oc apply \
 -f $DIR/player-aggregator.svc.yml \
 -f $DIR/player-aggregator.deployment.yml \
 -f $DIR/player-aggregator.route.yml
+
+kn service create event-forwarder \
+--image quay.io/redhatdemo/2021-kafka-event-forwarder-nodejs \
+-e NODE_ENV=${NODE_ENV} \
+-e KAFKA_SVC_USERNAME=${KAFKA_SVC_USERNAME} \
+-e KAFKA_SVC_PASSWORD=${KAFKA_SVC_PASSWORD} \
+-e KAFKA_BOOTSTRAP_URL=${KAFKA_BOOTSTRAP_URL} \
+-l app.openshift.io/runtime=nodejs
+
+oc apply -f 
+
