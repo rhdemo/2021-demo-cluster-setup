@@ -27,13 +27,13 @@ parameters:
     value: quay.io/redhatdemo/2021-game-server:latest
     required: true
   - name: CONTAINER_REQUEST_CPU
-    value: 500m
-  - name: CONTAINER_REQUEST_MEMORY
-    value: 512Mi
-  - name: CONTAINER_LIMIT_CPU
     value: 1000m
-  - name: CONTAINER_LIMIT_MEMORY
+  - name: CONTAINER_REQUEST_MEMORY
     value: 1024Mi
+  - name: CONTAINER_LIMIT_CPU
+    value: 2000m
+  - name: CONTAINER_LIMIT_MEMORY
+    value: 2048Mi
   - name: ROLLOUT_STRATEGY
     value: "Rolling"
     required: true
@@ -49,6 +49,7 @@ objects:
     metadata:
       name: ${APPLICATION_NAME}
       labels:
+        app.openshift.io/runtime: nodejs
         app: ${APPLICATION_NAME}
     spec:
       replicas: ${{REPLICAS}}

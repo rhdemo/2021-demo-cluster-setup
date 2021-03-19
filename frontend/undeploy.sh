@@ -10,3 +10,4 @@ oc process -f "${DIR}/admin.yml"  | oc delete -f -
 oc process -f "${DIR}/game-server.yml" | oc delete -f -
 oc process -f "${DIR}/game-ui.yml" | oc delete -f -
 oc process -f "${DIR}/game-routes.yml" | oc delete -f -
+oc delete trigger/game-wss-scores -n battleships-backend

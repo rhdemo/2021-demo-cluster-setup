@@ -35,6 +35,7 @@ objects:
     kind: DeploymentConfig
     metadata:
       labels:
+        app.openshift.io/runtime: nginx
         app: ${APPLICATION_NAME}
       name: ${APPLICATION_NAME}
     spec:

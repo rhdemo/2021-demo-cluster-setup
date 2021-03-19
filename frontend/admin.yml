@@ -37,6 +37,7 @@ objects:
     metadata:
       name: ${APPLICATION_NAME}
       labels:
+        app.openshift.io/runtime: nodejs
         app: ${APPLICATION_NAME}
     spec:
       replicas: ${{REPLICAS}}
