@@ -11,15 +11,7 @@ operator/namespace:
 
 .PHONY: operator/install
 operator/install: operator/namespace
-	@oc apply -f operator/install/subscription.yaml || true
-
-.PHONY:
-cluster/libs:
-	@oc -n $(DG_NAMESPACE) apply -f operator/libs-pvc.yaml
-	@oc -n $(DG_NAMESPACE) apply -f operator/libs-pod.yaml
-	@oc -n $(DG_NAMESPACE) wait --for=condition=ready --timeout=2m pod/datagrid-lib-pod
-	@oc -n $(DG_NAMESPACE) cp --no-preserve=true libs datagrid-lib-pod:/tmp/
-	@oc -n $(DG_NAMESPACE) delete pod datagrid-lib-pod
+	@sed -e "s/NAMESPACE/$(DG_NAMESPACE)/g" operator/install/subscription.yaml | oc apply -n $(DG_NAMESPACE) -f -
 
 .PHONY: cluster/deploy
 cluster/deploy:
