@@ -37,7 +37,7 @@ caches/deploy:
 	@oc -n $(DG_NAMESPACE) apply -f operator/batch.yaml
 
 .PHONY: deploy
-deploy: operator/install cluster/libs cluster/deploy caches/deploy
+deploy: operator/install cluster/deploy caches/deploy
 
 .PHONY: clean
 clean:
