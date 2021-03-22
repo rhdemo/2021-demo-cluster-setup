@@ -11,12 +11,7 @@ operator/namespace:
 
 .PHONY: operator/install
 operator/install: operator/namespace
-	# @oc apply -f operator/install/subscription.yaml || true
-	# TODO replace with OLM subscription operator/install/subscription.yaml when 2.1.2.Final released
-	@oc apply -f operator/install/crds/ || true
-	@sed -e '/# Replace/{n;s/.*/  namespace: $(DG_NAMESPACE)/}' operator/install/operator-install.yaml | oc apply -n $(DG_NAMESPACE) -f -
-
-	@for i in {1..30}; do oc wait --for condition=established --timeout=60s crd/infinispans.infinispan.org -n $(DG_NAMESPACE) && break || sleep 1; done
+	@oc apply -f operator/install/subscription.yaml || true
 
 .PHONY:
 cluster/libs:
