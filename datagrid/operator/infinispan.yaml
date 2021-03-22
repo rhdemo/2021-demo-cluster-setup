@@ -3,9 +3,7 @@ kind: Infinispan
 metadata:
   name: datagrid
 spec:
-  image: quay.io/infinispan/server:12.0.2.Final-1
-  # dependencies:
-  #   volumeClaimName: datagrid-lib-pvc
+  image: quay.io/redhatdemo/datagrid:2021
   expose:
     type: LoadBalancer
   replicas: 2

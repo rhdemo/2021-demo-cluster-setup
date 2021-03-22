@@ -1,3 +1,4 @@
+DG_DEMO_IMAGE=quay.io/redhatdemo/datagrid:2021
 DG_NAMESPACE=datagrid
 DG_REPLICAS=2
 
@@ -12,6 +13,11 @@ operator/namespace:
 .PHONY: operator/install
 operator/install: operator/namespace
 	@sed -e "s/NAMESPACE/$(DG_NAMESPACE)/g" operator/install/subscription.yaml | oc apply -n $(DG_NAMESPACE) -f -
+
+.PHONY: cluster/image
+cluster/image:
+	@docker build . -t $(DG_DEMO_IMAGE)
+	@docker push $(DG_DEMO_IMAGE)
 
 .PHONY: cluster/deploy
 cluster/deploy:

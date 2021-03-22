@@ -17,7 +17,7 @@ All services can be reached directly via:
 Additional cache/counter configurations can be added to the `config/batch*` files.
 
 ## Additional libraries
-Additional jars can be added to the Infinispan `server/lib` directory by placing them in the local `libs` folder before calling `make deploy`
+Additional jars can be added to the Infinispan `server/lib` directory by adding them to the local `libs` folder and creating a custom server image via `make cluster/image`.
 
 ## Deployment
 `make deploy DG_NAMESPACE=<namespace>`

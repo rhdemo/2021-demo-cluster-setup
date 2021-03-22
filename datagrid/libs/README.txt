@@ -1,1 +1,1 @@
-Any files added to this directory will be mounted in the `server/libs` directories of the Infinispan pods.
+Any files added to this directory will be copied to the `server/lib` directory of the custom image.
