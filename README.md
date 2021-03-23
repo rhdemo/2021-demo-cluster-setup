@@ -1,5 +1,12 @@
 # Deployment for 2021
 
+## Requirements
+
+* OpenShift Cluster 4.6+
+* OpenShift CLI (`oc`)
+* Knative CLI (`kn`)
+* Make
+
 ## Usage
 
 ### 1. Create an Environment File

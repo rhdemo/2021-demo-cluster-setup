@@ -1,0 +1,12 @@
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: kafka-forwarder-match-start
+  namespace: battleships-backend
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: match-start
+  subscriber:
+    uri: http://event-forwarder.kafka-streams.svc.cluster.local/

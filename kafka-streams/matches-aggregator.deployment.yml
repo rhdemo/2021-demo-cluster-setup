@@ -31,7 +31,7 @@ spec:
         - configMapRef:
             name: kafka-streams-config
         image: quay.io/redhatdemo/2021-kafka-streams-match-aggregator
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         name: ks-matches
         ports:
         - containerPort: 8080
