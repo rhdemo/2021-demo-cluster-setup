@@ -1,8 +1,8 @@
+schema --upload=/etc/batch/LeaderboardServiceContextInitializer.proto LeaderboardServiceContextInitializer.proto
+
 create cache --file=/etc/batch/game.xml game
 create cache --file=/etc/batch/match-instances.xml match-instances
 create cache --file=/etc/batch/players.xml players
-create cache --file=/etc/batch/players-scores.xml players-scores
-create cache --file=/etc/batch/players-shots.xml players-shots
 
 cd caches/game
 put --encoding=application/json --file=/etc/batch/game-config.json game

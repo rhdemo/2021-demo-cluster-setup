@@ -1,0 +1,16 @@
+        <infinispan>
+            <cache-container>
+                <distributed-cache name="CACHE_NAME" statistics="true" owners="2">
+                    <memory storage="HEAP" />
+                    <encoding>
+                        <key media-type="application/x-protostream" />
+                        <value media-type="application/x-protostream" />
+                    </encoding>
+                    <indexing enabled="true">
+                        <indexed-entities>
+                            <indexed-entity>INDEXED_ENTITY</indexed-entity>
+                        </indexed-entities>
+                    </indexing>
+                </distributed-cache>
+            </cache-container>
+        </infinispan>

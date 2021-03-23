@@ -1,7 +1,7 @@
-name: attack
+name: matchstart
 namespace: ""
 runtime: quarkus
-image: quay.io/ilawson/attack
+image: quay.io/ilawson/matchstart
 imageDigest: ""
 trigger: events
 builder: quay.io/boson/faas-quarkus-jvm-builder
@@ -12,8 +12,3 @@ builderMap:
 envVars:
   SCORINGSERVICE: http://scoring-service.battleships-scoring.svc.cluster.local:8080/
   WATCHMAN: http://watchman.battleships-backend.svc.cluster.local:8080/watch
-  CARRIER_SCORE: 250
-  DESTROYER_SCORE: 50
-  SUBMARINE_SCORE: 100
-  BATTLESHIP_SCORE: 200
-  HIT_SCORE: 5

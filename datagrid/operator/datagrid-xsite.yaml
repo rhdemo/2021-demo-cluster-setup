@@ -1,0 +1,31 @@
+apiVersion: infinispan.org/v1
+kind: Infinispan
+metadata:
+  name: datagrid
+spec:
+  image: quay.io/redhatdemo/datagrid:2021
+  expose:
+    type: LoadBalancer
+  replicas: 2
+  security:
+    endpointEncryption:
+      type: None
+    endpointAuthentication: false
+  service:
+    type: DataGrid
+    sites:
+      local:
+        name: SITE_NAME
+        expose:
+          type: LoadBalancer
+      locations:
+        - name: AWS
+          url: openshift://api.summit-dev-aws.m7o7.p1.openshiftapps.com:6443
+          secretName: aws-token
+        - name: GCP
+          url: openshift://api.summit-dev-gcp.45i1.p1.openshiftapps.com:6443
+          secretName: gcp-token
+  logging:
+    categories:
+      org.jgroups.protocols.TCP: error
+      org.jgroups.protocols.relay.RELAY2: error

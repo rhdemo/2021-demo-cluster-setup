@@ -1,0 +1,12 @@
+--- 
+    apiVersion: infinispan.org/v2alpha1
+    kind: Cache
+    metadata: 
+      name: CACHE_NAME
+    spec: 
+      clusterName: datagrid
+      name: CACHE_NAME
+      adminAuth: 
+        secretName: cache-credentials
+      template: |
+        CACHE_CONFIG

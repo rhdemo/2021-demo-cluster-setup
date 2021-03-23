@@ -13,6 +13,7 @@ import io.vertx.core.json.JsonObject;
 
 import javax.inject.Inject;
 import java.net.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import org.uth.summit.utils.*;
@@ -70,7 +71,9 @@ public class AttackEvent
         String destroyed = message.getString("destroyed");
   
         // Watchman
-        boolean watched = watchman.inform( "[ATTACK] match:" + match + " game:" + game + " hit:" + hit + " uuid:" + uuid + " human:" + human + " destroyed: " + ( destroyed == null ? "false" : "true" ));
+        LocalDateTime now = LocalDateTime.now();
+
+        boolean watched = watchman.inform( "[ATTACK] (" + now.toString() +"):" + match + " game:" + game + " hit:" + hit + " uuid:" + uuid + " human:" + human + " destroyed: " + ( destroyed == null ? "false" : destroyed ));
       
         // Log for verbosity :-) 
         System.out.println( "  Game: " + game );
