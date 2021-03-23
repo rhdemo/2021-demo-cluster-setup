@@ -1,3 +1,64 @@
 # Deployment for 2021
 
-Work in progress.
+## Usage
+
+### 1. Create an Environment File
+
+Copy the `.env.example` into a file named `.env`. This will be used by the
+various scripts to inject variables into their deployments.
+
+The `OC_` variables require a token and cluster API URL. This is the target
+OpenShift cluster that services will be deployed onto.
+
+```
+OC_URL=https://the-cluster.openshiftapps.com:6443
+OC_TOKEN=sha256~thisis-atoken-itsrandom # to be used instead of OC_USER and OC_PASSWORD
+```
+
+The cluster name is important for a multi-cluster demo. It will be used to
+tag outgoing payloads, i.e data sent to an off-cluster Kafka instance will
+be tagged as being from the "Americas" cluster.
+
+```
+CLUSTER_NAME="Americas"
+```
+
+Variables used to connect to the (possibly external) Kafka service.
+
+```
+KAFKA_SVC_USERNAME=srvc-acct-xxx-yyy-zzz-123
+KAFKA_BOOTSTRAP_URL=some-name-abc.kafka.devshift.org:443
+KAFKA_SVC_PASSWORD=1pass2goes-here-abcd-1b743
+```
+
+This controls Node.js application behaviours. Specifically, the game WebSocket
+Server will send game records to S3 (if AWS variables are defined), enable trace
+logging, and enable player vs. player matches if this is set to "dev"
+
+```
+NODE_ENV="prod"
+AWS_ACCESS_KEY_ID=abc123
+AWS_SECRET_ACCESS_KEY=123+abc
+```
+
+The admin application is used to control game state, e.g for dramatic pause
+during a demo. This is protected via basic authentication with a username and
+password.
+
+```
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=secretsauce
+```
+
+### 2. Deploy the Services
+
+Make is used to deploy everything. It's important that Data Grid is deployed
+prior to the backend and frontend components.
+
+```
+make datagrid && \
+make backend && \
+make ai && \
+make kafka-streams \
+make frontend
+```
