@@ -12,7 +12,7 @@ parameters:
     value: game
     required: true
   - name: REPLICAS
-    value: "5"
+    value: "2"
     required: true
   - name: IMAGE_REPOSITORY
     displayName: Image Repository

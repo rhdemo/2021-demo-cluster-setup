@@ -13,4 +13,4 @@ oc process -f "${DIR}/admin.yml" -p ADMIN_PASSWORD="${ADMIN_PASSWORD}" | oc crea
 oc process -f "${DIR}/game-server.yml" -p AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}" -p AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" -p ROLLOUT_STRATEGY="${ROLLOUT_STRATEGY}" | oc create -f -
 oc process -f "${DIR}/game-ui.yml" -p ROLLOUT_STRATEGY="${ROLLOUT_STRATEGY}" | oc create -f -
 oc process -f "${DIR}/game-routes.yml"  | oc create -f -
-oc apply -f knative.trigger.yml
+oc apply -f ${DIR}/knative.trigger.yml
