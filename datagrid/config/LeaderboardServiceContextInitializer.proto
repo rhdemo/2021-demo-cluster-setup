@@ -1,0 +1,97 @@
+// File name: LeaderboardServiceContextInitializer.proto
+// Generated from : com.redhat.model.LeaderboardServiceContextInitializer
+
+syntax = "proto2";
+
+package com.redhat;
+
+
+
+enum GameStatus {
+
+   PLAYING = 1;
+
+   WIN = 2;
+
+   LOSS = 3;
+}
+
+
+enum ShipType {
+
+   CARRIER = 1;
+
+   SUBMARINE = 2;
+}
+
+
+/**
+ * @Indexed
+ */
+message PlayerScore {
+
+   optional string userId = 1;
+
+   optional string matchId = 2;
+
+   optional string gameId = 3;
+
+   optional string username = 4;
+
+   optional bool human = 5;
+
+   /**
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    */
+   optional int32 score = 6;
+
+   /**
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    */
+   optional int64 timestamp = 7;
+
+   optional GameStatus gameStatus = 8;
+}
+
+
+/**
+ * @Indexed
+ */
+message Shot {
+
+   required string userId = 1;
+
+   required string matchId = 2;
+
+   optional string gameId = 3;
+
+   /**
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    */
+   optional bool human = 4;
+
+   /**
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    */
+   optional int64 timestamp = 5;
+
+   /**
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    */
+   optional ShotType shotType = 6;
+
+   /**
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    */
+   optional ShipType shipType = 7;
+}
+
+
+enum ShotType {
+
+   HIT = 1;
+
+   MISS = 2;
+
+   SUNK = 3;
+}
