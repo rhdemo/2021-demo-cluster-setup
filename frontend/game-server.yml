@@ -31,9 +31,9 @@ parameters:
   - name: CONTAINER_REQUEST_MEMORY
     value: 1024Mi
   - name: CONTAINER_LIMIT_CPU
-    value: 2000m
+    value: 1000m
   - name: CONTAINER_LIMIT_MEMORY
-    value: 2048Mi
+    value: 1024Mi
   - name: ROLLOUT_STRATEGY
     value: "Rolling"
     required: true
