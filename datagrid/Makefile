@@ -29,7 +29,7 @@ cluster/deploy:
 caches/deploy:
 	@oc -n $(DG_NAMESPACE) create configmap datagrid-batch --from-file=config/
 	@oc -n $(DG_NAMESPACE) apply -f operator/batch.yaml
-	@sed -e '/CACHE_CONFIG/ {' -e 'r ./operator/index-cache.xml' -e 'd' -e '}' ./operator/cache-cr-template.yaml | sed "s/CACHE_NAME/players-shots/g"; s/INDEXED_ENTITY/com.redhat.Shot/g; | oc apply -n $(DG_NAMESPACE) -f -
+	@sed -e '/CACHE_CONFIG/ {' -e 'r ./operator/index-cache.xml' -e 'd' -e '}' ./operator/cache-cr-template.yaml | sed "s/CACHE_NAME/players-shots/g; s/INDEXED_ENTITY/com.redhat.Shot/g;" | oc apply -n $(DG_NAMESPACE) -f -
 	@sed -e '/CACHE_CONFIG/ {' -e 'r ./operator/index-cache.xml' -e 'd' -e '}' ./operator/cache-cr-template.yaml | sed "s/CACHE_NAME/players-scores/g; s/INDEXED_ENTITY/com.redhat.PlayerScore/g;" | oc apply -n $(DG_NAMESPACE) -f -
 
 
