@@ -6,8 +6,10 @@
 #                                                                                                   #
 ######################################################################################################
 
-source temp-env.sh
-source functions.sh
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+
+source $DIR/temp-env.sh
+source $DIR/functions.sh
 
 mk_environment() {
     NO_COLOR=${NO_COLOR:-""}

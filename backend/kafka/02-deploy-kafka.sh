@@ -12,15 +12,17 @@ if [[ $OSTYPE == "darwin"* ]]; then
    sed () { gsed "$@"; }
 fi
 
-source temp-env.sh
-source functions.sh
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+
+source $DIR/temp-env.sh
+source $DIR/functions.sh
 
 NAMESPACE=${KAFKA_NAMESPACE:-game-kafka}
 CLUSTER=${KAFKA_CLUSTER:-demo2021}
 EXPOSE=${KAFKA_EXPOSE:-false}
 EXPORTER=${KAFKA_EXPORTER:-true}
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+
 
 mk_environment() {
     NO_COLOR=${NO_COLOR:-""}
