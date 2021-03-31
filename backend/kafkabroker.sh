@@ -365,7 +365,7 @@ kafka_default_channel() {
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: default-ch-webhook
+  name: demo-default-ch-webhook
   namespace: knative-eventing
 data:
   # Configuration for defaulting channels that do not specify CRD implementations.
@@ -385,7 +385,7 @@ kafka_default_broker_channel() {
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: config-br-default-channel
+  name: demo-config-br-default-channel
   namespace: knative-eventing
 data:
   channelTemplateSpec: |
@@ -408,6 +408,12 @@ kind: Broker
 metadata:
  name: default
  namespace: "$project_ns"
+spec:
+ config:
+  apiVersion: v1
+  kind: ConfigMap
+  name: demo-config-br-default-channel
+  namespace: knative-eventing
 EOT
   )
 
