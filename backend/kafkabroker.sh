@@ -286,7 +286,7 @@ run_with_timeout () {
 install_serverless() {
     mk_environment
 
-    apply_openshift_strimzi_subscription
+    #apply_openshift_strimzi_subscription
     apply_strimzi
 
     #apply_openshift_amq_streams_subscription
