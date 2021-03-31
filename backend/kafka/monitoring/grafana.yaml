@@ -68,10 +68,14 @@ spec:
           periodSeconds: 20
         resources:
           requests:
-            cpu: "1"
+            #cpu: "1"
+            #memory: 512Mi
+            cpu: "500m"
             memory: 512Mi
           limits:
-            cpu: "1"
+            #cpu: "1"
+            #memory: 512Mi
+            cpu: "500m"
             memory: 512Mi
       volumes:
       - name: grafana-data

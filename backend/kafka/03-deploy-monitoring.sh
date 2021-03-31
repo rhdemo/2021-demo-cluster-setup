@@ -7,10 +7,8 @@
 ######################################################################################################
 
 # Replace sed with gsed on macOS
-if [[ $(name) -eq Darwin ]]; then
+if [[ $OSTYPE == "darwin"* ]]; then
    sed () { gsed "$@"; }
-   echo 'You are on a mac!'
-   type sed
 fi
 
 source temp-env.sh
@@ -43,15 +41,13 @@ apply_prometheus() {
   header_text "Monitoring install"
   apply_project $NAMESPACE
 
-  
+  cat $DIR/monitoring/prometheus.yaml | sed -e "s/namespace: .*/namespace: $NAMESPACE/;s/regex: myproject/regex: $NAMESPACE/" > $DIR/monitoring/prometheus-deploy.yaml
 
-    cat $DIR/monitoring/prometheus.yaml | sed -e "s/namespace: .*/namespace: $NAMESPACE/;s/regex: myproject/regex: $NAMESPACE/" > $DIR/monitoring/prometheus-deploy.yaml
-
-    oc apply -f $DIR/monitoring/alerting-rules.yaml -n $NAMESPACE
-    oc apply -f $DIR/monitoring/prometheus-deploy.yaml -n $NAMESPACE
-    rm $DIR/monitoring/prometheus-deploy.yaml
-    oc apply -f $DIR/monitoring/alertmanager.yaml -n $NAMESPACE
-    oc expose service/prometheus -n $NAMESPACE
+  oc apply -f $DIR/monitoring/alerting-rules.yaml -n $NAMESPACE
+  oc apply -f $DIR/monitoring/prometheus-deploy.yaml -n $NAMESPACE
+  rm $DIR/monitoring/prometheus-deploy.yaml
+  oc apply -f $DIR/monitoring/alertmanager.yaml -n $NAMESPACE
+  oc expose service/prometheus -n $NAMESPACE
 }
 
 wait_for_prometheus() {
@@ -92,15 +88,15 @@ apply_grafana() {
         --from-file=grafana-dashboard-provider.yaml=$DIR/monitoring/grafana-dashboard-provider.yaml \
         --from-file=strimzi-kafka-dashboard.json=$DIR/monitoring/dashboards/strimzi-kafka-dashboard.json \
         --from-file=strimzi-zookeeper-dashboard.json=$DIR/monitoring/dashboards/strimzi-zookeeper-dashboard.json \
-        --from-file=strimzi-kafka-mirror-maker-2-dashboard.json=$DIR/monitoring/dashboards/strimzi-kafka-mirror-maker-2-dashboard.json \
         --from-file=strimzi-kafka-exporter-dashboard.json=$DIR/monitoring/dashboards/strimzi-kafka-exporter-dashboard.json \
         -n $NAMESPACE
+        #--from-file=strimzi-kafka-mirror-maker-2-dashboard.json=$DIR/monitoring/dashboards/strimzi-kafka-mirror-maker-2-dashboard.json \
 
     oc label configmap grafana-config app=strimzi
 
     rm $DIR/monitoring/dashboards/strimzi-kafka-dashboard.json
     rm $DIR/monitoring/dashboards/strimzi-zookeeper-dashboard.json
-    rm $DIR/monitoring/dashboards/strimzi-kafka-mirror-maker-2-dashboard.json
+    #rm $DIR/monitoring/dashboards/strimzi-kafka-mirror-maker-2-dashboard.json
     rm $DIR/monitoring/dashboards/strimzi-kafka-exporter-dashboard.json
 
     # Grafana

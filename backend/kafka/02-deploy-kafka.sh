@@ -8,10 +8,8 @@
 ######################################################################################################
 
 # Replace sed with gsed on macOS
-if [[ $(name) -eq Darwin ]]; then
+if [[ $OSTYPE == "darwin"* ]]; then
    sed () { gsed "$@"; }
-   #echo 'You are on a mac!'
-   #type sed
 fi
 
 source temp-env.sh
