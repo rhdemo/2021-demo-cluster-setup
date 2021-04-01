@@ -62,6 +62,7 @@ public class BonusEvent
         String match = message.getString("match");
         JsonObject by = message.getJsonObject("by");
         String uuid = by.getString("uuid");
+        Long ts = message.getLong("ts");
         boolean human = by.getBoolean("human");
         String username = by.getString("username");
         Integer shots = message.getInteger("shots");
@@ -83,7 +84,6 @@ public class BonusEvent
         int multiplier = ( envValue == null ? DEFAULT_BONUS_SCORE : Integer.parseInt(envValue));
         delta = ( shots == null ? multiplier : ( shots * multiplier));
 
-
         if( shots != null )
         {
           System.out.println( "  Shots (multiple):" + shots.toString());
@@ -104,7 +104,7 @@ public class BonusEvent
           // Post to Scoring Service
           String compositePostURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + uuid + "?delta=" + delta + "&human=" + human + "&timestamp=" + ts;
 
-          postman = new Postman( compositePostURL );
+          Postman postman = new Postman( compositePostURL );
           if( !( postman.deliver("dummy")))
           {
             System.out.println( "Failed to update Scoring Service");
