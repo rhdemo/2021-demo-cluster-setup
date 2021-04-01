@@ -6,6 +6,6 @@ ROLLOUT_STRATEGY=${ROLLOUT_STRATEGY:-Rolling}
 
 oc project ${PROJECT} 2> /dev/null || oc new-project ${PROJECT}
 
-oc new-app https://github.com/sub-mod/bataai.git -l name=bataai
 oc process -f "${DIR}/common.yml" -p CLUSTER_NAME="${CLUSTER_NAME}" | oc create -f -
+oc process -f "${DIR}/ai-model.yml" | oc create -f -
 oc process -f "${DIR}/ai-agent-server.yml" | oc create -f -
