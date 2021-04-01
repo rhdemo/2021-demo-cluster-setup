@@ -48,6 +48,19 @@ wait_for_operators() {
   done
 }
 
+wait_for_operator() {
+  namespace=${1:-"openshift-operators"}
+  operator=${2}
+  wait_for_deployment ${namespace} ${operator}
+}
+
+wait_for_deployment() {
+  namespace=${1:-"openshift-operators"}
+  deployment=${2}
+  wait_for_deployments_to_be_created ${namespace} ${deployment}
+  out=$(oc wait deploy/${deployment} -n ${namespace} --for=condition=Available --timeout 60s >/dev/null)
+}
+
 wait_for_all_deployments() {
   ns=$1
   sleep 15
