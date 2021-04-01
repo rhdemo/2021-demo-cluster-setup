@@ -10,6 +10,8 @@ metadata:
 parameters:
   - name: APPLICATION_NAME
     value: ai-agent-server
+  - name: NAMESPACE
+    required: true
   - name: CONFIG_MAP_NAME
     value: 2021-demo-common
   - name: REPLICAS
@@ -47,7 +49,7 @@ objects:
           containers:
             - env:
               - name: AI_SERVER_URL
-                value: http://bataai.ai.svc.cluster.local:8080/
+                value: http://demo-2021-ai.${NAMESPACE}.svc.cluster.local:8080/
               envFrom:
                 - configMapRef:
                     name: ${CONFIG_MAP_NAME}
