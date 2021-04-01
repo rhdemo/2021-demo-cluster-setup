@@ -36,3 +36,9 @@ kafka-streams: oc_login
 
 kafka-streams-undeploy: oc_login
 	./kafka-streams/undeploy.sh
+
+backend: oc_login
+  ./backend/deploy.sh
+
+backend-undeploy: oc_login
+  ./backend/undeploy.sh
