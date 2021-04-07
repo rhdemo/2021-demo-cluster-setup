@@ -1,0 +1,12 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: leaderboard
+spec:
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: leaderboard-service
+    weight: 100
+  wildcardPolicy: None
