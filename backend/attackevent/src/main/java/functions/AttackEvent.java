@@ -33,6 +33,9 @@ public class AttackEvent
     @ConfigProperty(name = "SCORINGSERVICE")
     String _scoringServiceURL;
 
+    @ConfigProperty(name = "PRODMODE")
+    String _prodmode;
+
     @Funq
     @CloudEventMapping(responseType = "attackprocessed")
     //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
@@ -71,9 +74,12 @@ public class AttackEvent
         String destroyed = message.getString("destroyed");
   
         // Watchman
-        LocalDateTime now = LocalDateTime.now();
+        if( _prodmode.equals("dev"))
+        {
+          LocalDateTime now = LocalDateTime.now();
 
-        boolean watched = watchman.inform( "[ATTACK] (" + now.toString() +"):" + match + " game:" + game + " hit:" + hit + " uuid:" + uuid + " human:" + human + " destroyed: " + ( destroyed == null ? "false" : destroyed ));
+          boolean watched = watchman.inform( "[ATTACK] (" + now.toString() +"):" + match + " game:" + game + " hit:" + hit + " uuid:" + uuid + " human:" + human + " destroyed: " + ( destroyed == null ? "false" : destroyed ));
+        }
       
         // Log for verbosity :-) 
         System.out.println( "  Game: " + game );

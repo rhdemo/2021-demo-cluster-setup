@@ -32,6 +32,9 @@ public class BonusEvent
     @ConfigProperty(name = "SCORINGSERVICE")
     String _scoringServiceURL;
 
+    @ConfigProperty(name = "PRODMODE")
+    String _prodmode;
+
     @Funq
     @CloudEventMapping(responseType = "bonusprocessed")
     //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
@@ -68,10 +71,13 @@ public class BonusEvent
         Integer shots = message.getInteger("shots");
   
         // Watchman
-        LocalDateTime now = LocalDateTime.now();
+        if( _prodmode.equals("dev"))
+        {
+          LocalDateTime now = LocalDateTime.now();
 
-        boolean watched = watchman.inform( "[BONUS] (" + now.toString() +"):" + match + " game:" + game + " uuid: " + uuid + " name: " + username + ( shots != null ? " shots:" + shots.toString() : "" ));
-      
+          boolean watched = watchman.inform( "[BONUS] (" + now.toString() +"):" + match + " game:" + game + " uuid: " + uuid + " name: " + username + ( shots != null ? " shots:" + shots.toString() : "" ));
+        }
+
         // Log for verbosity :-) 
         System.out.println( "  Game: " + game );
         System.out.println( "  Match: " + match );
