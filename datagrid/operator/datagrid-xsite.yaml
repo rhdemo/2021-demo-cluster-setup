@@ -3,7 +3,7 @@ kind: Infinispan
 metadata:
   name: datagrid
 spec:
-  image: quay.io/redhatdemo/datagrid:2021
+  image: quay.io/infinispan/server:12.1.0.Final
   expose:
     type: LoadBalancer
   replicas: 2
@@ -20,10 +20,10 @@ spec:
           type: LoadBalancer
       locations:
         - name: AWS
-          url: openshift://api.summit-dev-aws.m7o7.p1.openshiftapps.com:6443
+          url: openshift://api.summit-aws.28ts.p1.openshiftapps.com:6443
           secretName: aws-token
         - name: GCP
-          url: openshift://api.summit-dev-gcp.45i1.p1.openshiftapps.com:6443
+          url: openshift://api.summit-gcp.eior.p2.openshiftapps.com:6443
           secretName: gcp-token
   logging:
     categories:
