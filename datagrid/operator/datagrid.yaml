@@ -3,6 +3,7 @@ kind: Infinispan
 metadata:
   name: datagrid
 spec:
+  image: quay.io/infinispan/server:12.1.0.Final
   expose:
     type: LoadBalancer
   replicas: 2
