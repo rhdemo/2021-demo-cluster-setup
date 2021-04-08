@@ -68,6 +68,7 @@ public class AttackEvent
         Long ts = message.getLong("ts");
         JsonObject by = message.getJsonObject("by");
         String uuid = by.getString("uuid");
+        String username = by.getString("username");
         boolean human = by.getBoolean("human");
         Integer shotCount = by.getInteger("shotCount");
         Integer consecutiveHits = by.getInteger("consecutiveHitsCount");
@@ -86,16 +87,20 @@ public class AttackEvent
         System.out.println( "  Match: " + match );
         System.out.println( "  UUID: " + uuid );
         System.out.println( "  Hit: " + hit );
+        System.out.println( "  Username: " + username );
         System.out.println( "  TS: " + ts );
         System.out.println( "  Human: " + human );
         System.out.println( "  ShotCount: " + shotCount );
         System.out.println( "  ConsecutiveHits: " + consecutiveHits );
         System.out.println( "  Destroyed: " + destroyed );
 
+        // Replace spaces in the username for URL transmission
+        username = username.replaceAll(" ", "%20");
+
         // Build SHOTS rest URL here as we have all info
         // Format /shot/{game}/{match}/{user}/{ts}?type=[HIT,MISS,SUNK]&human={human}
         String type = ( !hit ? "MISS" : ( destroyed != null ? "SUNK" : "HIT"));
-        String compositeShotsURL = _scoringServiceURL + "shot/" + game + "/" + match + "/" + uuid + "/" + ts + "?type=" + type + "&human=" + human;
+        String compositeShotsURL = _scoringServiceURL + "shot/" + game + "/" + match + "/" + uuid + "/" + ts + "?type=" + type + "&human=" + human + "&username=" + username;
 
         // Update the SHOTS cache
         Postman postman = new Postman( compositeShotsURL );
@@ -133,7 +138,7 @@ public class AttackEvent
           output.setHuman(human);
 
           // Post to Scoring Service
-          String compositePostURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + uuid + "?delta=" + delta + "&human=" + human + "&timestamp=" + ts;
+          String compositePostURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + uuid + "?delta=" + delta + "&human=" + human + "&username=" + username + "&timestamp=" + ts;
 
           postman = new Postman( compositePostURL );
           if( !( postman.deliver("dummy")))

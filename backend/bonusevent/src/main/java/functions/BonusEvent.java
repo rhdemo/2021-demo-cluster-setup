@@ -107,8 +107,11 @@ public class BonusEvent
           output.setDelta(Integer.valueOf(delta));
           output.setHuman(human);
 
+          // Convert spaces in the username for URL
+          username = username.replaceAll(" ", "%20");
+
           // Post to Scoring Service
-          String compositePostURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + uuid + "?delta=" + delta + "&human=" + human + "&timestamp=" + ts;
+          String compositePostURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + uuid + "?delta=" + delta + "&human=" + human + "&username" + username + "&timestamp=" + ts + "&bonus=true";
 
           Postman postman = new Postman( compositePostURL );
           if( !( postman.deliver("dummy")))
