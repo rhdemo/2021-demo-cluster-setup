@@ -3,7 +3,6 @@ kind: Infinispan
 metadata:
   name: datagrid
 spec:
-  image: quay.io/redhatdemo/datagrid:2021
   expose:
     type: LoadBalancer
   replicas: 2
