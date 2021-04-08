@@ -1,15 +1,15 @@
-<infinispan>
-    <cache-container>
-        <distributed-cache name="game" statistics="true">
-            <encoding>
-                <key media-type="text/plain" />
-                <value media-type="text/plain" />
-            </encoding>
-            <backups>
-                <backup site="BACKUP_SITE" strategy="ASYNC" enabled="true">
-                    <take-offline min-wait="60000" after-failures="3" />
-                </backup>
-            </backups>
-        </distributed-cache>
-    </cache-container>
-</infinispan>
+        <infinispan>
+            <cache-container>
+                <distributed-cache name="game" statistics="true">
+                    <encoding>
+                        <key media-type="text/plain" />
+                        <value media-type="text/plain" />
+                    </encoding>
+                    <backups>
+                        <backup site="BACKUP_SITE" strategy="ASYNC" enabled="true">
+                            <take-offline min-wait="60000" after-failures="3" />
+                        </backup>
+                    </backups>
+                </distributed-cache>
+            </cache-container>
+        </infinispan>
