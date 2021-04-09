@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Template
+
+labels:
+  application: kafka-forwarder-triggers
+
+metadata:
+  name: kafka-forwarder-triggers
+
+parameters:
+  - name: PROJECT
+    required: true
+
+objects:
+  - apiVersion: eventing.knative.dev/v1
+    kind: Trigger
+    metadata:
+      name: kafka-forwarder-match-end
+      namespace: battleships-backend
+    spec:
+      broker: default
+      filter:
+        attributes:
+          type: match-end
+      subscriber:
+        uri: http://event-forwarder.${PROJECT}.svc.cluster.local/
+
+  - apiVersion: eventing.knative.dev/v1
+    kind: Trigger
+    metadata:
+      name: kafka-forwarder-attack
+      namespace: battleships-backend
+    spec:
+      broker: default
+      filter:
+        attributes:
+          type: attack
+      subscriber:
+        uri: http://event-forwarder.${PROJECT}.svc.cluster.local/
+
+  - apiVersion: eventing.knative.dev/v1
+    kind: Trigger
+    metadata:
+      name: kafka-forwarder-match-start
+      namespace: battleships-backend
+    spec:
+      broker: default
+      filter:
+        attributes:
+          type: match-start
+      subscriber:
+        uri: http://event-forwarder.${PROJECT}.svc.cluster.local/

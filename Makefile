@@ -31,6 +31,12 @@ frontend: oc_login
 frontend-undeploy: oc_login
 	./frontend/undeploy.sh
 
+kafka-forwarder: oc_login
+	./kafka-forwarder/deploy.sh
+
+kafka-forwarder-undeploy: oc_login
+	./kafka-forwarder/undeploy.sh
+
 kafka-streams: oc_login
 	./kafka-streams/deploy.sh
 
