@@ -66,6 +66,28 @@ prior to the backend and frontend components.
 make datagrid && \
 make backend && \
 make ai && \
-make kafka-streams \
+make kafka-forwarder \
 make frontend
+```
+
+### 3. Deploy Kafka Streams
+
+This service only needs to be deployed in a single cluster since it aggregates
+data from all of the clusters.
+
+If using a Kafka instance with self-signed certificates you'll need to copy a
+trustore containing the certificate to the *kafka-streams/* folder.
+
+_NOTE: All *jks* files in the repo are ignored by gitignore._
+
+```bash
+cp $PATH_TO_A_TRUSTSTORE kafka-streams/truststore.jks
+```
+
+Update the *.env* with `TRUSTSTORE_PASSWORD` set to the password for the
+*truststore.jks* you copied, then run:
+
+
+```
+make kafka-streams
 ```

@@ -20,7 +20,9 @@ parameters:
     required: true
   - name: KAFKA_BOOTSTRAP_URL
     required: true
-  - name: CLUSTER_NAME
+  - name: TRUSTSTORE_LOCATION
+    required: true
+  - name: TRUSTSTORE_PASSWORD
     required: true
 
 objects:
@@ -38,6 +40,7 @@ objects:
     metadata:
       name: ${CONFIG_MAP_NAME}
     data:
-      CLUSTER_NAME: ${CLUSTER_NAME}
+      TRUSTSTORE_PASSWORD: ${TRUSTSTORE_PASSWORD}
+      TRUSTSTORE_LOCATION: ${TRUSTSTORE_LOCATION}
       LOG_LEVEL: ${LOG_LEVEL}
       KAFKA_BOOTSTRAP_URL: ${KAFKA_BOOTSTRAP_URL}

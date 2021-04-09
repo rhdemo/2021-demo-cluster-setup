@@ -2,6 +2,7 @@
 .env
 .repo/
 .secrets/
+*.jks
 
 # certs
 *.pem

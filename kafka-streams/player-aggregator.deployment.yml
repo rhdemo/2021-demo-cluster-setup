@@ -24,6 +24,10 @@ spec:
       labels:
         deployment: ks-players
     spec:
+      volumes:
+      - name: truststore
+        secret:
+          secretName: truststore
       containers:
       - envFrom:
         - secretRef:
@@ -33,6 +37,10 @@ spec:
         image: quay.io/redhatdemo/2021-kafka-streams-player-matches-aggregator
         imagePullPolicy: Always
         name: ks-players
+        volumeMounts:
+          - mountPath: "/var/truststore"
+            name: truststore
+            readOnly: true
         ports:
         - containerPort: 8080
           protocol: TCP
