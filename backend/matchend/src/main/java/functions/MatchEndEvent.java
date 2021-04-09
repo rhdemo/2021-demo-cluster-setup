@@ -88,7 +88,7 @@ public class MatchEndEvent
         
         // Build WIN/LOSS rest URL here as we have all info
         // Format /scoring/(game)/(match)/(uuid)/win?timestamp
-        // Format /scoring/(game)/(match)/(uuid)/lose?timestamp
+        // Format /scoring/(game)/(match)/(uuid)/loss?timestamp
         String compositeWinURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + winnerUuid + "/win?" + System.currentTimeMillis();
         String compositeLoseURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + loserUuid + "/loss?" + System.currentTimeMillis();
 

@@ -100,7 +100,7 @@ public class AttackEvent
         // Build SHOTS rest URL here as we have all info
         // Format /shot/{game}/{match}/{user}/{ts}?type=[HIT,MISS,SUNK]&human={human}[&ship=(ship type)]
         String type = ( !hit ? "MISS" : ( destroyed != null ? "SUNK" : "HIT"));
-        String compositeShotsURL = _scoringServiceURL + "shot/" + game + "/" + match + "/" + uuid + "/" + ts + "?type=" + type + "&human=" + human + ( destroyed != null ? "&ship=" + destroyed : "" );
+        String compositeShotsURL = _scoringServiceURL + "shot/" + game + "/" + match + "/" + uuid + "/" + ts + "?type=" + type + "&human=" + human + ( destroyed != null ? "&ship=" + destroyed.toUpperCase() : "" );
 
         // Update the SHOTS cache
         Postman postman = new Postman( compositeShotsURL );
