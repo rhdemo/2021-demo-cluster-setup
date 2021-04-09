@@ -45,6 +45,11 @@ kafka-streams-undeploy: oc_login
 
 backend: oc_login
 	./backend/deploy.sh
+	./backend/leaderboard-service.sh
+	./backend/scoring-service.sh
 
 backend-undeploy: oc_login
 	./backend/undeploy.sh
+
+serverless: oc_login
+	./backend/kafkabroker.sh

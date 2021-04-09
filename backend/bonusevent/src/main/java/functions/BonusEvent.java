@@ -32,6 +32,9 @@ public class BonusEvent
     @ConfigProperty(name = "SCORINGSERVICE")
     String _scoringServiceURL;
 
+    @ConfigProperty(name = "PRODMODE")
+    String _prodmode;
+
     @Funq
     @CloudEventMapping(responseType = "bonusprocessed")
     //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
@@ -68,10 +71,13 @@ public class BonusEvent
         Integer shots = message.getInteger("shots");
   
         // Watchman
-        LocalDateTime now = LocalDateTime.now();
+        if( _prodmode.equals("dev"))
+        {
+          LocalDateTime now = LocalDateTime.now();
 
-        boolean watched = watchman.inform( "[BONUS] (" + now.toString() +"):" + match + " game:" + game + " uuid: " + uuid + " name: " + username + ( shots != null ? " shots:" + shots.toString() : "" ));
-      
+          boolean watched = watchman.inform( "[BONUS] (" + now.toString() +"):" + match + " game:" + game + " uuid: " + uuid + " name: " + username + ( shots != null ? " shots:" + shots.toString() : "" ));
+        }
+
         // Log for verbosity :-) 
         System.out.println( "  Game: " + game );
         System.out.println( "  Match: " + match );
@@ -101,8 +107,11 @@ public class BonusEvent
           output.setDelta(Integer.valueOf(delta));
           output.setHuman(human);
 
+          // Convert spaces in the username for URL
+          username = username.replaceAll(" ", "%20");
+
           // Post to Scoring Service
-          String compositePostURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + uuid + "?delta=" + delta + "&human=" + human + "&timestamp=" + ts;
+          String compositePostURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + uuid + "?delta=" + delta + "&human=" + human + "&username" + username + "&timestamp=" + ts + "&bonus=true";
 
           Postman postman = new Postman( compositePostURL );
           if( !( postman.deliver("dummy")))

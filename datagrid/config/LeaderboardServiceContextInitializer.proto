@@ -22,6 +22,10 @@ enum ShipType {
    CARRIER = 1;
 
    SUBMARINE = 2;
+
+   BATTLESHIP = 3;
+
+   DESTROYER = 4;
 }
 
 
@@ -34,10 +38,16 @@ message PlayerScore {
 
    optional string matchId = 2;
 
+   /**
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    */
    optional string gameId = 3;
 
    optional string username = 4;
 
+   /**
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    */
    optional bool human = 5;
 
    /**
@@ -50,7 +60,12 @@ message PlayerScore {
     */
    optional int64 timestamp = 7;
 
+   /**
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    */
    optional GameStatus gameStatus = 8;
+
+   optional int32 bonus = 9;
 }
 
 
@@ -63,6 +78,9 @@ message Shot {
 
    required string matchId = 2;
 
+   /**
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    */
    optional string gameId = 3;
 
    /**

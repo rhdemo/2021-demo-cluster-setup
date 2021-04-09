@@ -286,7 +286,7 @@ run_with_timeout () {
 install_serverless() {
     mk_environment
 
-    #apply_openshift_strimzi_subscription
+    apply_openshift_strimzi_subscription
     apply_strimzi
 
     #apply_openshift_amq_streams_subscription
@@ -296,9 +296,10 @@ install_serverless() {
     apply_serving
     apply_eventing
     apply_knativekafka
+    adjust_serverless_operator_defaults
 
-    kafka_default_channel
-    kafka_default_broker_channel
+    #kafka_default_channel
+    #kafka_default_broker_channel
 
 }
 
@@ -380,6 +381,36 @@ EOT
   )"
   apply "$default_channel"
 }
+
+adjust_serverless_operator_defaults() {
+  adjust_knative_eventing="$(cat <<EOT
+apiVersion: operator.knative.dev/v1alpha1
+kind: KnativeEventing
+metadata:
+  name: knative-eventing
+  namespace: knative-eventing
+spec:
+  config:
+    default-ch-webhook:
+      default-ch-config: |
+        clusterDefault:
+          apiVersion: messaging.knative.dev/v1beta1
+          kind: KafkaChannel
+          spec:
+            numPartitions: 10
+            replicationFactor: 1
+    config-br-default-channel:
+      channelTemplateSpec: |
+        apiVersion: messaging.knative.dev/v1beta1
+        kind: KafkaChannel
+        spec:
+          numPartitions: 5
+          replicationFactor: 1
+EOT
+)"
+  apply "$adjust_knative_eventing"
+}
+
 kafka_default_broker_channel() {
   default_broker_channel=$(cat <<EOT
 apiVersion: v1

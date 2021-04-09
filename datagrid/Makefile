@@ -22,11 +22,13 @@ cluster/image:
 
 .PHONY: cluster/deploy
 cluster/deploy:
+	@for i in {1..30}; do oc wait --for condition=established --timeout=60s crd/infinispans.infinispan.org -n $(DG_NAMESPACE) && break || sleep 1; done
 	@oc -n $(DG_NAMESPACE) apply -f operator/datagrid.yaml
 	@for i in {1..30}; do oc rollout status statefulset datagrid -n $(DG_NAMESPACE) && break || sleep 1; done
 
 .PHONY: caches/deploy
 caches/deploy:
+	@sed -e '/CACHE_CONFIG/ {' -e 'r ./operator/game-cache.xml' -e 'd' -e '}' ./operator/cache-cr-template.yaml | sed "s/CACHE_NAME/game/g" | oc apply -n $(DG_NAMESPACE) -f - ;
 	@oc -n $(DG_NAMESPACE) create configmap datagrid-batch --from-file=config/
 	@oc -n $(DG_NAMESPACE) apply -f operator/batch.yaml
 	@sed -e '/CACHE_CONFIG/ {' -e 'r ./operator/index-cache.xml' -e 'd' -e '}' ./operator/cache-cr-template.yaml | sed "s/CACHE_NAME/players-shots/g; s/INDEXED_ENTITY/com.redhat.Shot/g;" | oc apply -n $(DG_NAMESPACE) -f -
@@ -50,6 +52,8 @@ cluster/xsite/deploy:
 
 .PHONY: caches/xsite/deploy
 caches/xsite/deploy:
+	@for i in {1..30}; do oc wait --for condition=established --timeout=60s crd/infinispans.infinispan.org -n $(DG_NAMESPACE) && break || sleep 1; done
+	@sed -e '/CACHE_CONFIG/ {' -e 'r ./operator/game-cache-xsite.xml' -e 'd' -e '}' ./operator/cache-cr-template.yaml | sed "s/CACHE_NAME/game/g; s/BACKUP_SITE/$(DG_REMOTE_SITE)/g" | oc apply -n $(DG_NAMESPACE) -f - ;
 	@oc -n $(DG_NAMESPACE) create configmap datagrid-batch --from-file=config/
 	@oc -n $(DG_NAMESPACE) apply -f operator/batch.yaml
 	@sed -e '/CACHE_CONFIG/ {' -e 'r ./operator/index-cache-xsite.xml' -e 'd' -e '}' ./operator/cache-cr-template.yaml | sed "s/CACHE_NAME/players-shots/g; s/INDEXED_ENTITY/com.redhat.Shot/g; s/BACKUP_SITE/$(DG_REMOTE_SITE)/g" | oc apply -n $(DG_NAMESPACE) -f - ;

@@ -2,9 +2,3 @@ apiVersion: eventing.knative.dev/v1
 kind: Broker
 metadata:
  name: default
-spec:
- config:
-  apiVersion: v1
-  kind: ConfigMap
-  name: demo-config-br-default-channel
-  namespace: knative-eventing

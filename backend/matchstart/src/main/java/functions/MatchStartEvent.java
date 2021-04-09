@@ -31,6 +31,9 @@ public class MatchStartEvent
     @ConfigProperty(name = "SCORINGSERVICE")
     String _scoringServiceURL;
 
+    @ConfigProperty(name = "PRODMODE")
+    String _prodmode;
+
     @Funq
     @CloudEventMapping(responseType = "matchstartprocessed")
     //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
@@ -72,9 +75,12 @@ public class MatchStartEvent
         boolean playerBHuman = playerB.getBoolean("human");
         
         // Watchman
-        LocalDateTime now = LocalDateTime.now();
-        boolean watched = watchman.inform( "[MATCH-START] (" + now.toString() + ") " + playerAUsername + "(" + ( playerAHuman ? "HUME" : "BOTTY" ) + ") vs " + playerBUsername + "(" + ( playerBHuman ? "HUME" : "BOTTY" ) + ")");
-      
+        if( _prodmode.equals("dev"))
+        {
+          LocalDateTime now = LocalDateTime.now();
+          boolean watched = watchman.inform( "[MATCH-START] (" + now.toString() + ") " + playerAUsername + "(" + ( playerAHuman ? "HUME" : "BOTTY" ) + ") vs " + playerBUsername + "(" + ( playerBHuman ? "HUME" : "BOTTY" ) + ")");
+        }
+
         // Log for verbosity :-) 
         System.out.println( "  Game: " + game );
         System.out.println( "  Match: " + match );

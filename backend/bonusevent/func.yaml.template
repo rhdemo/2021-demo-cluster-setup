@@ -13,3 +13,4 @@ envVars:
   SCORINGSERVICE: http://scoring-service.battleships-scoring.svc.cluster.local:8080/
   WATCHMAN: http://watchman.battleships-backend.svc.cluster.local:8080/watch
   BONUS_SCORE: 1
+  PRODMODE: dev

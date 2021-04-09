@@ -33,6 +33,9 @@ public class MatchEndEvent
     @ConfigProperty(name = "SCORINGSERVICE")
     String _scoringServiceURL;
 
+    @ConfigProperty(name = "PRODMODE")
+    String _prodmode;
+
     @Funq
     @CloudEventMapping(responseType = "matchendprocessed")
     //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
@@ -71,9 +74,12 @@ public class MatchEndEvent
         boolean loserHuman = loser.getBoolean("human");
   
         // Watchman
-        LocalDateTime now = LocalDateTime.now();
-        boolean watched = watchman.inform( "[MATCH-END] (" + now.toString() + ") match:" + match + " game:" + game + " Winner: " + winnerUsername + " " + ( winnerHuman ? "(HUME)" : "(BOTTY)" ) + " Loser: " + loserUsername + " " + ( loserHuman ? "(HUME)" : "(BOTTY)") );
-      
+        if( _prodmode.equals("dev"))
+        {
+          LocalDateTime now = LocalDateTime.now();
+          boolean watched = watchman.inform( "[MATCH-END] (" + now.toString() + ") match:" + match + " game:" + game + " Winner: " + winnerUsername + " " + ( winnerHuman ? "(HUME)" : "(BOTTY)" ) + " Loser: " + loserUsername + " " + ( loserHuman ? "(HUME)" : "(BOTTY)") );
+        }
+
         // Log for verbosity :-) 
         System.out.println( "  Game: " + game );
         System.out.println( "  Match: " + match );
@@ -82,9 +88,9 @@ public class MatchEndEvent
         
         // Build WIN/LOSS rest URL here as we have all info
         // Format /scoring/(game)/(match)/(uuid)/win?timestamp
-        // Format /scoring/(game)/(match)/(uuid)/lose?timestamp
-        String compositeWinURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + winnerUuid + "?" + System.currentTimeMillis();
-        String compositeLoseURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + loserUuid + "?" + System.currentTimeMillis();
+        // Format /scoring/(game)/(match)/(uuid)/loss?timestamp
+        String compositeWinURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + winnerUuid + "/win?" + System.currentTimeMillis();
+        String compositeLoseURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + loserUuid + "/loss?" + System.currentTimeMillis();
 
         // Update the WIN/LOSS cache
         Postman postman = new Postman( compositeWinURL );
