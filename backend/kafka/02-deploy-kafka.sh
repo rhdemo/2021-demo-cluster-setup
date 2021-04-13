@@ -2,7 +2,7 @@
 
 
 #####################################################################################################
-#                                                                                                   # 
+#                                                                                                   #
 # Deploys the latest released Strimzi Operator in the openshift-operators namespace.                #
 #                                                                                                   #
 ######################################################################################################
@@ -39,10 +39,11 @@ apply_kafka() {
 
   header_text "Installing Kafka instance $CLUSTER in namespace $NAMESPACE."
 
-  cp $DIR/cluster/kafka-persistent-with-metrics.yaml $DIR/cluster/$CLUSTER-kafka-persistent-with-metrics.yaml
+  mkdir -p $DIR/custer/work
+  cp $DIR/cluster/kafka-persistent-with-metrics.yaml $DIR/cluster/work/$CLUSTER-kafka-persistent-with-metrics.yaml
 
   sed -i "s/my-cluster/$CLUSTER/" $DIR/cluster/$CLUSTER-kafka-persistent-with-metrics.yaml
-  
+
   # if Kafka Exporter is enabled, the corresponding YAML is added to the Kafka resource
   if [ "$EXPORTER" == "true" ]; then
     #yq m -i $DIR/cluster/$CLUSTER-kafka-persistent-with-metrics.yaml $DIR/cluster/kafka-exporter.yaml
@@ -54,22 +55,25 @@ apply_kafka() {
     #yq w -i $DIR/cluster/$CLUSTER-kafka-persistent-with-metrics.yaml spec.kafka.listeners.external.type loadbalancer
     #yq w -i $DIR/cluster/$CLUSTER-kafka-persistent-with-metrics.yaml spec.kafka.listeners.external.type route
     yq -i eval '.spec.kafka.listeners.external.type = "route"' $DIR/cluster/$CLUSTER-kafka-persistent-with-metrics.yaml
-    
+
     #yq w -i $DIR/cluster/$CLUSTER-kafka-persistent-with-metrics.yaml spec.kafka.listeners.external.tls false
-    yq -i eval '.spec.kafka.listeners.external.tls = false' $DIR/cluster/$CLUSTER-kafka-persistent-with-metrics.yaml
-    
+    yq -i eval '.spec.kafka.listeners.external.tls = true' $DIR/cluster/$CLUSTER-kafka-persistent-with-metrics.yaml
+
     #yq w -i $DIR/cluster/$CLUSTER-kafka-persistent-with-metrics.yaml spec.kafka.listeners.external.port 9094
     yq -i eval '.spec.kafka.listeners.external.port = 9094' $DIR/cluster/$CLUSTER-kafka-persistent-with-metrics.yaml
+
+    # authentication
+    yq -i eval '.spec.kafka.listeners.external.authentication.type = "scram-sha-512"' $DIR/cluster/$CLUSTER-kafka-persistent-with-metrics.yaml
   fi
 
   header_text "Strimzi Kafka instance install"
   apply_project $NAMESPACE
-  
+
   header_text "Applying Strimzi Kafka Cluster file"
-  
+
   #kafka = `cat $DIR/cluster/$CLUSTER-kafka-persistent-with-metrics.yaml`
   #apply "$kafka"
-  
+
   out=$(oc apply -f $DIR/cluster/$CLUSTER-kafka-persistent-with-metrics.yaml -n $NAMESPACE 2>&1)
   header_text $out
 
@@ -142,7 +146,7 @@ wait_for_kafka() {
     sleep 5
 
     echo "Waiting for entity operator to be ready..."
-    wait_for_deployments_to_be_created $NAMESPACE $CLUSTER-entity-operator
+    wait_for_resource_to_be_created $NAMESPACE deployment $CLUSTER-entity-operator
     oc rollout status deployment/$CLUSTER-entity-operator -w -n $NAMESPACE
     echo "...entity operator ready"
 

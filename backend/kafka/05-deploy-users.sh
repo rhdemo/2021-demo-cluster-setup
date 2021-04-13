@@ -2,7 +2,7 @@
 
 #####################################################################################################
 #                                                                                                   # 
-# Deploys Kafka Topixs
+# Deploys Kafka User
 #                                                                                                   #
 ######################################################################################################
 
@@ -21,8 +21,8 @@ CLUSTER=${KAFKA_CLUSTER:-demo2021}
 
 
 
-sed "s/my-cluster/$CLUSTER/g" $DIR/cluster/kafka-topics.yaml > $DIR/cluster/$CLUSTER-kafka-topics.yaml
+sed "s/my-cluster/$CLUSTER/" $DIR/cluster/kafka-users.yaml > $DIR/cluster/$CLUSTER-kafka-users.yaml
 
-oc apply -f $DIR/cluster/$CLUSTER-kafka-topics.yaml -n $NAMESPACE
+oc apply -f $DIR/cluster/$CLUSTER-kafka-users.yaml -n $NAMESPACE
 
-rm $DIR/cluster/$CLUSTER-kafka-topics.yaml
+rm $DIR/cluster/$CLUSTER-kafka-users.yaml

@@ -28,7 +28,7 @@ spec:
       - id: 0
         type: persistent-claim
         #size: 100Gi
-        size: 1Gi
+        size: 100Gi
         deleteClaim: true
     # commenting storage class to allow using the default one on AWS, GCP, ...
     #    class: gp2
@@ -36,13 +36,13 @@ spec:
       requests:
         #cpu: "2"
         #memory: 4Gi
-        cpu: 1
-        memory: 1Gi
+        cpu: "1"
+        memory: 4Gi
       limits:
         #cpu: "2"
         #memory: 4Gi
-        cpu: "1"
-        memory: 1Gi
+        cpu: "2"
+        memory: 12Gi
     metrics:
       # Inspired by config from Kafka 2.0.0 example rules:
       # https://github.com/prometheus/jmx_exporter/blob/master/example_configs/kafka-2_0_0.yml
@@ -151,7 +151,7 @@ spec:
     storage:
       type: persistent-claim
       #size: 100Gi
-      size: 1Gi
+      size: 20Gi
       deleteClaim: true
     # commenting storage class to allow using the default one on AWS, GCP, ...
     #  class: gp2
@@ -159,7 +159,7 @@ spec:
       requests:
         #cpu: "1"
         #memory: 2Gi
-        cpu: "500m"
+        cpu: "250m"
         memory: 500Mi
       limits:
         #cpu: "1"

@@ -23,11 +23,10 @@ apply_project() {
 }
 
 # Check that resource exists before start waiting
-wait_for_deployments_to_be_created() {
+wait_for_resource_to_be_created() {
   while true; do
     set +e
-    #oc get -n openshift-operators deployment $@ >/dev/null 2>&1
-    oc get -n $1 deployment ${@:2} >/dev/null 2>&1
+    oc get -n $1 $2 ${@:3} >/dev/null 2>&1
     rc=$?
     set -e
     if [ $rc -eq 0 ]; then
@@ -39,9 +38,8 @@ wait_for_deployments_to_be_created() {
 
 wait_for_operators() {
   operators="$@"
-  #run_with_timeout 60 wait_for_deployments_to_be_created $operators
   sleep 15
-  wait_for_deployments_to_be_created openshift-operators $operators
+  wait_for_resource_to_be_created openshift-operators deployment $operators
   for operator in $operators; do
     out=$(oc wait deploy/$operator -n openshift-operators --for=condition=Available --timeout 60s >/dev/null)
     header_text "$out"
@@ -57,7 +55,7 @@ wait_for_operator() {
 wait_for_deployment() {
   namespace=${1:-"openshift-operators"}
   deployment=${2}
-  wait_for_deployments_to_be_created ${namespace} ${deployment}
+  wait_for_resource_to_be_created ${namespace} deployment ${deployment}
   out=$(oc wait deploy/${deployment} -n ${namespace} --for=condition=Available --timeout 60s >/dev/null)
 }
 
