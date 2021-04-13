@@ -15,7 +15,7 @@ public class MessageOutput
   public void setGame( String game ) { _game = game; }
   public void setMatch( String match ) { _match = match; }
   public void setUuid( String uuid ) { _uuid = uuid; }
-  public void setHostname( String hostname ) { _uuid = hostname; }
+  public void setHostname( String hostname ) { _hostname = hostname; }
   public void setTs( Long ts ) { _ts = ts; }
   public void setHuman( boolean human ) { _human = human; }
   public void setDelta( Integer delta ) { _delta = delta; }
