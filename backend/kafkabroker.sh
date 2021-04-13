@@ -356,7 +356,7 @@ EOT
   header_text "Applying Strimzi Cluster file"
   apply "$kafka"
   header_text "Waiting for Strimzi to become ready"
-  wait_for_all_deployments kafka
+  oc wait kafka --all --timeout=-1s --for=condition=Ready -n kafka
 
 }
 
