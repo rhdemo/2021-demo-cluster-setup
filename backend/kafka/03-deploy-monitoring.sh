@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #####################################################################################################
-#                                                                                                   # 
+#                                                                                                   #
 # Deploys Prometheus and Grafana                                                                    #
 #                                                                                                   #
 ######################################################################################################
@@ -100,7 +100,7 @@ EOT
 
 apply_prometheus() {
   namespace=${1:-${NAMESPACE}}
-  
+
   header_text "Prometheus server install"
 
   header_text "Prometheus service account"
@@ -111,7 +111,7 @@ metadata:
   name: ${PROMETHEUS_SERVICE_ACCOUNT}
   namespace: ${namespace}
   annotations:
-    serviceaccounts.openshift.io/oauth-redirectreference.primary: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"${PROMETHEUS_ROUTE}"}}'  
+    serviceaccounts.openshift.io/oauth-redirectreference.primary: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"${PROMETHEUS_ROUTE}"}}'
 EOT
   )
   apply "${service_account}"
@@ -146,7 +146,7 @@ rules:
   resources:
   - configmaps
   - namespaces # Required to get through the alertmanager oauth proxy
-  verbs: ["get"]  
+  verbs: ["get"]
 EOT
   )
   apply "${service_account_role}"
@@ -210,7 +210,7 @@ spec:
   to:
     kind: Service
     name: prometheus-service
-  wildcardPolicy: None  
+  wildcardPolicy: None
 EOT
   )
   apply "${prometheus_route}"
@@ -220,7 +220,7 @@ EOT
   cp $DIR/monitoring/prometheus-cr.yaml $DIR/monitoring/work/prometheus-cr.yaml
 
   prometheus_external_url=$(oc get route prometheus-route -o jsonpath="{.spec.host}")
-  
+
   sed -i "s|{{ prometheus_name }}|${PROMETHEUS_NAME}|g" $DIR/monitoring/work/prometheus-cr.yaml
   sed -i "s|{{ prometheus_image }}|${PROMETHEUS_IMAGE}|g" $DIR/monitoring/work/prometheus-cr.yaml
   sed -i "s|{{ prometheus_auth_proxy_image }}|${PROMETHEUS_AUTH_PROXY_IMAGE}|g" $DIR/monitoring/work/prometheus-cr.yaml
@@ -238,7 +238,7 @@ EOT
 wait_for_prometheus() {
   name=${1:-${PROMETHEUS_NAME}}
   namespace=${1:-${NAMESPACE}}
-  
+
   header_text "* Waiting for Prometheus StatefulSet to be ready..."
   readyReplicas="0"
   prometheusReplicas=$(oc get prometheus ${name} -o jsonpath="{.spec.replicas}" -n ${namespace})
@@ -300,12 +300,25 @@ EOT
   )
   apply "${oauth_secret}"
 
+  header_text "Grafana custom resource"
+
+  mkdir -p $DIR/monitoring/work
+  cp $DIR/monitoring/grafana-cr.yaml $DIR/monitoring/work/grafana-cr.yaml
+
+  sed -i "s|{{ grafana_name }}|${GRAFANA_NAME}|g" $DIR/monitoring/work/grafana-cr.yaml
+  sed -i "s|{{ grafana_auth_proxy_image }}|${GRAFANA_AUTH_PROXY_IMAGE}|g" $DIR/monitoring/work/grafana-cr.yaml
+  sed -i "s|{{ monitoring_label_value }}|${MONITORING_LABEL_VALUE}|g" $DIR/monitoring/work/grafana-cr.yaml
+
+  out=$(oc apply -f $DIR/monitoring/work/grafana-cr.yaml -n ${namespace} 2>&1)
+  header_text $out
+
   header_text "Grafana datasource"
   datasource=$(cat << EOT
 apiVersion: integreatly.org/v1alpha1
 kind: GrafanaDataSource
 metadata:
   name: prometheus
+  namespace: ${namespace}
 spec:
   name: prometheus.yaml
   datasources:
@@ -322,18 +335,56 @@ EOT
   )
   apply "${datasource}"
 
-  header_text "Grafana custom resource"
-  
-  mkdir -p $DIR/monitoring/work 
-  cp $DIR/monitoring/grafana-cr.yaml $DIR/monitoring/work/grafana-cr.yaml
+  header_text "Grafana openshift monitoring clusterrole binding"
+  clusterrolebinding=$(cat <<EOT
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: grafana-cluster-monitoring-view-game-kafka
+subjects:
+  - kind: ServiceAccount
+    name: grafana-serviceaccount
+    namespace: ${namespace}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-monitoring-view
+EOT
+  )
+  apply "${clusterrolebinding}"
 
-  sed -i "s|{{ grafana_name }}|${GRAFANA_NAME}|g" $DIR/monitoring/work/grafana-cr.yaml
-  sed -i "s|{{ grafana_auth_proxy_image }}|${GRAFANA_AUTH_PROXY_IMAGE}|g" $DIR/monitoring/work/grafana-cr.yaml
-  sed -i "s|{{ monitoring_label_value }}|${MONITORING_LABEL_VALUE}|g" $DIR/monitoring/work/grafana-cr.yaml
+  header_text "Grafana service account token"
+  wait_for_resource_to_be_created $namespace serviceaccount grafana-serviceaccount
+  token=$(oc sa get-token grafana-serviceaccount -n ${namespace})
 
-  out=$(oc apply -f $DIR/monitoring/work/grafana-cr.yaml -n ${namespace} 2>&1)
-  header_text $out
-  
+  header_text "Grafana prometheus datasource"
+  openshift_datasource=$(cat << EOT
+apiVersion: integreatly.org/v1alpha1
+kind: GrafanaDataSource
+metadata:
+  name: prometheus-openshift-monitoring
+  namespace: game-kafka
+  resourceVersion: "175546"
+  selfLink: /apis/integreatly.org/v1alpha1/namespaces/game-kafka/grafanadatasources/prometheus-openshift-monitoring
+  uid: 4a5def58-92ea-4bb2-ade6-c43af6bc50eb
+spec:
+  name: openshift-monitoring.yaml
+  datasources:
+  - access: proxy
+    editable: true
+    jsonData:
+      httpHeaderName1: Authorization
+      timeInterval: 5s
+      tlsSkipVerify: true
+    name: OpenShift Monitoring
+    secureJsonData:
+      httpHeaderValue1: Bearer ${token}
+    type: prometheus
+    url: https://prometheus-k8s.openshift-monitoring.svc:9091
+EOT
+  )
+  apply "${openshift_datasource}"
+
   wait_for_grafana
 }
 
@@ -393,7 +444,7 @@ deploy() {
     apply_prometheus_operator
 
     apply_prometheus
-    
+
     apply_grafana_operator
 
     apply_grafana
