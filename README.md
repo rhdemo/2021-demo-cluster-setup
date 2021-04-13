@@ -64,6 +64,7 @@ prior to the backend and frontend components.
 
 ```
 make datagrid && \
+make serverless && \
 make backend && \
 make ai && \
 make kafka-forwarder \
