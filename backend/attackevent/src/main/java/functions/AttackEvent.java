@@ -4,6 +4,7 @@ import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
 import io.quarkus.funqy.knative.events.CloudEventMapping;
+import io.quarkus.funqy.knative.events.CloudEventBuilder;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.subscription.UniEmitter;
 import io.vertx.core.Vertx;
@@ -24,9 +25,6 @@ public class AttackEvent
     private static final int DEFAULT_HIT_SCORE = 5;
     private long start = System.currentTimeMillis();
 
-    @Inject
-    Vertx vertx;
-
     @ConfigProperty(name = "WATCHMAN")
     String _watchmanURL;
 
@@ -37,17 +35,17 @@ public class AttackEvent
     String _prodmode;
 
     @Funq
-    @CloudEventMapping(responseType = "attackprocessed")
-    //public Uni<MessageOutput> function( Input input, @Context CloudEvent cloudEvent)
-    public Uni<MessageOutput> function( String input, @Context CloudEvent cloudEvent)
+    public CloudEvent<MessageOutput> processor( String input )  
     {
-      return Uni.createFrom().emitter(emitter -> 
-      {
-        buildResponse(input, cloudEvent, emitter);
-      });    
+      MessageOutput output = buildResponse( input );
+      String eventName = ( output.getHostname() == null ? "attackprocessed" : "attackprocessed-" + output.getHostname() );
+
+      return CloudEventBuilder.create()
+        .type(eventName)
+        .build(output);      
     }
  
-    public void buildResponse( String input, CloudEvent cloudEvent, UniEmitter<? super MessageOutput> emitter )
+    public MessageOutput buildResponse( String input )
     {
       // Setup Watchman
       Watchman watchman = new Watchman( _watchmanURL );
@@ -73,6 +71,7 @@ public class AttackEvent
         Integer shotCount = by.getInteger("shotCount");
         Integer consecutiveHits = by.getInteger("consecutiveHitsCount");
         String destroyed = message.getString("destroyed");
+        String hostname = message.getString("hostname");
   
         // Watchman
         if( _prodmode.equals("dev"))
@@ -80,19 +79,20 @@ public class AttackEvent
           LocalDateTime now = LocalDateTime.now();
 
           boolean watched = watchman.inform( "[ATTACK] (" + now.toString() +"):" + match + " game:" + game + " hit:" + hit + " uuid:" + uuid + " human:" + human + " destroyed: " + ( destroyed == null ? "false" : destroyed ));
+        
+          // Log for verbosity :-) 
+          System.out.println( "  Game: " + game );
+          System.out.println( "  Match: " + match );
+          System.out.println( "  UUID: " + uuid );
+          System.out.println( "  Hostname: " + hostname );
+          System.out.println( "  Hit: " + hit );
+          System.out.println( "  Username: " + username );
+          System.out.println( "  TS: " + ts );
+          System.out.println( "  Human: " + human );
+          System.out.println( "  ShotCount: " + shotCount );
+          System.out.println( "  ConsecutiveHits: " + consecutiveHits );
+          System.out.println( "  Destroyed: " + destroyed );
         }
-      
-        // Log for verbosity :-) 
-        System.out.println( "  Game: " + game );
-        System.out.println( "  Match: " + match );
-        System.out.println( "  UUID: " + uuid );
-        System.out.println( "  Hit: " + hit );
-        System.out.println( "  Username: " + username );
-        System.out.println( "  TS: " + ts );
-        System.out.println( "  Human: " + human );
-        System.out.println( "  ShotCount: " + shotCount );
-        System.out.println( "  ConsecutiveHits: " + consecutiveHits );
-        System.out.println( "  Destroyed: " + destroyed );
 
         // Replace spaces in the username for URL transmission
         username = username.replaceAll(" ", "%20");
@@ -133,6 +133,7 @@ public class AttackEvent
           output.setGame(game);
           output.setMatch(match);
           output.setUuid(uuid);
+          output.setHostname( hostname );
           output.setTs(ts);
           output.setDelta(Integer.valueOf(delta));
           output.setHuman(human);
@@ -146,15 +147,15 @@ public class AttackEvent
             System.out.println( "Failed to update Scoring Service");
           }
 
-          // Post hit to SHOTS scoring-service
-
-          emitter.complete(output);
+          return output;
         }
+
+        return null;
       }
       catch( Exception exc )
       {
         System.out.println("Failed to parse JSON due to " + exc.toString());
-        return;
+        return null;
       }
     }
 }
