@@ -1,12 +1,55 @@
+---
 apiVersion: kafka.strimzi.io/v1alpha1
 kind: KafkaTopic
 metadata:
-  name: transactions
+  name: match-updates
   labels:
     strimzi.io/cluster: my-cluster
 spec:
   partitions: 50
-  replicas: 1
+  replicas: 3
   config:
-    retention.ms: 7200000
+    retention.ms: -1
+    segment.bytes: 1073741824
+
+---
+apiVersion: kafka.strimzi.io/v1alpha1
+kind: KafkaTopic
+metadata:
+  name: player-matches-intermediary
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  partitions: 50
+  replicas: 3
+  config:
+    retention.ms: -1
+    segment.bytes: 1073741824
+
+---
+apiVersion: kafka.strimzi.io/v1alpha1
+kind: KafkaTopic
+metadata:
+  name: player-matches-aggregated
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  partitions: 50
+  replicas: 3
+  config:
+    retention.ms: -1
+    segment.bytes: 1073741824
+
+---
+apiVersion: kafka.strimzi.io/v1alpha1
+kind: KafkaTopic
+metadata:
+  name: matches-aggregated
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  partitions: 50
+  replicas: 3
+  config:
+    retention.ms: -1
     segment.bytes: 1073741824

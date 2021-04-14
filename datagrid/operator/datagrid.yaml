@@ -4,6 +4,9 @@ metadata:
   name: datagrid
 spec:
   image: quay.io/infinispan/server:12.1.0.Final
+  container:
+    cpu: "1000m"
+    memory: 2Gi
   expose:
     type: LoadBalancer
   replicas: 2
