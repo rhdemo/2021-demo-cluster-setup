@@ -40,7 +40,7 @@ public class BonusEvent
     public CloudEvent<MessageOutput> processor( String input )  
     {
       MessageOutput output = buildResponse( input );
-      String eventName = ( output.getHostname() == null ? "attackprocessed" : "attackprocessed-" + output.getHostname() );
+      String eventName = ( output.getHostname() == null ? "bonusprocessed" : "bonusprocessed-" + output.getHostname() );
 
       return CloudEventBuilder.create()
         .type(eventName)
