@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: Template
-
+labels:
+  application: admin-ui
 metadata:
   name: game-ui
 
@@ -12,20 +13,19 @@ parameters:
     value: game
     required: true
   - name: REPLICAS
-    value: "2"
+    value: "4"
     required: true
   - name: IMAGE_REPOSITORY
-    displayName: Image Repository
     value: quay.io/redhatdemo/2021-game-ui:latest
     required: true
   - name: CONTAINER_REQUEST_CPU
-    value: 200m
+    value: 250m
   - name: CONTAINER_REQUEST_MEMORY
     value: 256Mi
   - name: CONTAINER_LIMIT_CPU
-    value: 500m
+    value: 250m
   - name: CONTAINER_LIMIT_MEMORY
-    value: 512Mi
+    value: 256Mi
   - name: ROLLOUT_STRATEGY
     value: "Rolling"
     required: true
@@ -68,7 +68,6 @@ objects:
       triggers:
         - type: ConfigChange
 
-
   - apiVersion: v1
     kind: Service
     metadata:
@@ -82,3 +81,15 @@ objects:
       selector:
         app: ${APPLICATION_NAME}
 
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      labels:
+        app: ${APPLICATION_NAME}
+      name: ${APPLICATION_NAME}
+    spec:
+      port:
+        targetPort: 8080
+      to:
+        kind: Service
+        name: ${APPLICATION_NAME}

@@ -31,6 +31,8 @@ parameters:
   - name: NODE_ENV
     value: dev
     required: true
+  - name: LOG_LEVEL
+    required: true
   - name: HTTP_PORT
     value: "8080"
     required: true
@@ -57,3 +59,4 @@ objects:
       CLUSTER_NAME: ${CLUSTER_NAME}
       NODE_ENV: ${NODE_ENV}
       HTTP_PORT: ${HTTP_PORT}
+      LOG_LEVEL: ${LOG_LEVEL}

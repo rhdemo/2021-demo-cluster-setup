@@ -9,7 +9,6 @@ metadata:
 
 parameters:
   - name: APPLICATION_NAME
-    value: game-server
     required: true
   - name: SECRET_NAME
     value: 2021-demo-common
@@ -17,11 +16,9 @@ parameters:
   - name: CONFIG_MAP_NAME
     value: 2021-demo-common
     required: true
-  - name: REPLICAS
-    value: "1"
     required: true
   - name: HTTP_PORT
-    value: "8080"
+    value: '8080'
     required: true
   - name: IMAGE_REPOSITORY
     value: quay.io/redhatdemo/2021-game-server:latest
@@ -41,48 +38,32 @@ parameters:
     value: ""
   - name: AWS_SECRET_ACCESS_KEY
     value: ""
+  - name: NAMESPACE
+    required: true
 
 
 objects:
-  - apiVersion: v1
-    kind: DeploymentConfig
+  - apiVersion: apps/v1
+    kind: StatefulSet
     metadata:
       name: ${APPLICATION_NAME}
       labels:
         app.openshift.io/runtime: nodejs
         app: ${APPLICATION_NAME}
     spec:
-      replicas: ${{REPLICAS}}
+      serviceName: ${APPLICATION_NAME}
+      replicas: 2
       selector:
-        deploymentconfig: ${APPLICATION_NAME}
-      strategy:
-        type: ${ROLLOUT_STRATEGY}
+        matchLabels:
+          app: ${APPLICATION_NAME}
       template:
         metadata:
           labels:
             app: ${APPLICATION_NAME}
-            deploymentconfig: ${APPLICATION_NAME}
         spec:
+          terminationGracePeriodSeconds: 10
           containers:
-            - env:
-              - name: AWS_ACCESS_KEY_ID
-                value: ${AWS_ACCESS_KEY_ID}
-              - name: AWS_SECRET_ACCESS_KEY
-                value: ${AWS_SECRET_ACCESS_KEY}
-              - name: AI_AGENT_SERVER_URL
-                value: http://ai-agent-server.ai.svc.cluster.local:8080/agent
-              envFrom:
-                - secretRef:
-                    name: ${SECRET_NAME}
-                - configMapRef:
-                    name: ${CONFIG_MAP_NAME}
-              image: ${IMAGE_REPOSITORY}
-              imagePullPolicy: Always
-              name: ${APPLICATION_NAME}
-              ports:
-                - containerPort: 8080
-                  protocol: TCP
-              resources:
+            - resources:
                 requests:
                   cpu: ${CONTAINER_REQUEST_CPU}
                   memory: ${CONTAINER_REQUEST_MEMORY}
@@ -90,40 +71,66 @@ objects:
                   cpu: ${CONTAINER_LIMIT_CPU}
                   memory: ${CONTAINER_LIMIT_MEMORY}
               terminationMessagePath: /dev/termination-log
+              name: ${APPLICATION_NAME}
+              env:
+                - name: NAMESPACE
+                  value: ${NAMESPACE}
+                - name: AWS_ACCESS_KEY_ID
+                  value: ${AWS_ACCESS_KEY_ID}
+                - name: AWS_SECRET_ACCESS_KEY
+                  value: ${AWS_SECRET_ACCESS_KEY}
+                - name: AI_AGENT_SERVER_URL
+                  value: http://ai-agent-server.ai.svc.cluster.local:8080/agent
+              ports:
+                - name: web
+                  containerPort: 8080
+                  protocol: TCP
+              imagePullPolicy: Always
               terminationMessagePolicy: File
-              readinessProbe:
-                tcpSocket:
-                  port: ${{HTTP_PORT}}
-                initialDelaySeconds: 15
-                timeoutSeconds: 5
-              livenessProbe:
-                tcpSocket:
-                  port: ${{HTTP_PORT}}
-                initialDelaySeconds: 15
-                timeoutSeconds: 5
-          dnsPolicy: ClusterFirst
+              envFrom:
+                - configMapRef:
+                    name: 2021-demo-common
+                - secretRef:
+                    name: 2021-demo-common
+              image: ${IMAGE_REPOSITORY}
           restartPolicy: Always
-          schedulerName: default-scheduler
+          terminationGracePeriodSeconds: 10
+          dnsPolicy: ClusterFirst
           securityContext: {}
-          terminationGracePeriodSeconds: 30
-      test: false
-      triggers:
-        - type: ConfigChange
+      podManagementPolicy: OrderedReady
+      updateStrategy:
+        type: RollingUpdate
+        rollingUpdate:
+          partition: 0
+      revisionHistoryLimit: 10
 
   - apiVersion: v1
     kind: Service
     metadata:
-      name: ${APPLICATION_NAME}
+      name: ${APPLICATION_NAME}-0
       labels:
-        app: ${APPLICATION_NAME}
+        app: ${APPLICATION_NAME}-0
     spec:
       ports:
-        - name: 8080-tcp
+        - protocol: TCP
           port: 8080
-          protocol: TCP
           targetPort: 8080
       selector:
-        deploymentconfig: ${APPLICATION_NAME}
+        statefulset.kubernetes.io/pod-name: ${APPLICATION_NAME}-0
+
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: ${APPLICATION_NAME}-1
+      labels:
+        app: ${APPLICATION_NAME}-1
+    spec:
+      ports:
+        - protocol: TCP
+          port: 8080
+          targetPort: 8080
+      selector:
+        statefulset.kubernetes.io/pod-name: ${APPLICATION_NAME}-1
   
   - apiVersion: v1
     kind: Route
@@ -133,7 +140,12 @@ objects:
       name: ${APPLICATION_NAME}
     spec:
       port:
-        targetPort: 8080
+        targetPort: ${HTTP_POT}
       to:
         kind: Service
-        name: ${APPLICATION_NAME}
+        name: ${APPLICATION_NAME}-0
+        weight: 100
+      alternateBackends:
+        - kind: Service
+          name: ${APPLICATION_NAME}-1
+          weight: 100

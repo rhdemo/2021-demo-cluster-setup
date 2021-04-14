@@ -27,7 +27,7 @@ parameters:
   - name: CONTAINER_LIMIT_MEMORY
     value: 512Mi
   - name: ADMIN_PASSWORD
-    value: ""
+    required: true
   - name: ADMIN_USERNAME
     value: "admin"
 

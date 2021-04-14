@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Template
+
+labels:
+  application: knative-triggers
+
+metadata:
+  name: knative-triggers
+
+parameters:
+  - name: APPLICATION_NAME
+    required: true
+  - name: NAMESPACE
+    required: true
+
+objects:
+  - apiVersion: eventing.knative.dev/v1
+    kind: Trigger
+    metadata:
+      name: ${APPLICATION_NAME}-scores-0
+    spec:
+      broker: default
+      filter:
+        attributes:
+          type: attackprocessed-${APPLICATION_NAME}-0
+      subscriber:
+        uri: http://${APPLICATION_NAME}-0.${NAMESPACE}.svc.cluster.local:8080/event/trigger
+
+  - apiVersion: eventing.knative.dev/v1
+    kind: Trigger
+    metadata:
+      name: ${APPLICATION_NAME}-scores-1
+    spec:
+      broker: default
+      filter:
+        attributes:
+          type: attackprocessed-${APPLICATION_NAME}-1
+      subscriber:
+        uri: http://${APPLICATION_NAME}-1.${NAMESPACE}.svc.cluster.local:8080/event/trigger
+
+  - apiVersion: eventing.knative.dev/v1
+    kind: Trigger
+    metadata:
+      name: ${APPLICATION_NAME}-bonuses-0
+    spec:
+      broker: default
+      filter:
+        attributes:
+          type: bonusprocessed-${APPLICATION_NAME}-0
+      subscriber:
+        uri: http://${APPLICATION_NAME}-0.${NAMESPACE}.svc.cluster.local:8080/event/trigger
+
+  - apiVersion: eventing.knative.dev/v1
+    kind: Trigger
+    metadata:
+      name: ${APPLICATION_NAME}-bonuses-1
+    spec:
+      broker: default
+      filter:
+        attributes:
+          type: bonusprocessed-${APPLICATION_NAME}-1
+      subscriber:
+        uri: http://${APPLICATION_NAME}-1.${NAMESPACE}.svc.cluster.local:8080/event/trigger
