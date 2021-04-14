@@ -1,0 +1,15 @@
+name: matchstart
+namespace: ""
+runtime: quarkus
+image: quay.io/ilawson/matchstart
+imageDigest: ""
+trigger: events
+builder: quay.io/mvasek/faas-quarkus-native-builder:mandrel
+builderMap:
+  default: quay.io/boson/faas-quarkus-jvm-builder
+  jvm: quay.io/boson/faas-quarkus-jvm-builder
+  native: quay.io/mvasek/faas-quarkus-native-builder:mandrel
+envVars:
+  SCORINGSERVICE: http://scoring-service.battleships-scoring.svc.cluster.local:8080/
+  WATCHMAN: http://watchman.battleships-backend.svc.cluster.local:8080/watch
+  PRODMODE: dev
