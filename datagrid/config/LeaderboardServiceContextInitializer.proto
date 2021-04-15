@@ -34,34 +34,39 @@ enum ShipType {
  */
 message PlayerScore {
 
+   /**
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.YES)
+    */
    optional string userId = 1;
 
    optional string matchId = 2;
 
    /**
-    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.YES)
     */
    optional string gameId = 3;
 
    optional string username = 4;
 
    /**
-    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.YES)
     */
    optional bool human = 5;
 
    /**
-    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.YES)
+    * @SortableField
     */
    optional int32 score = 6;
 
    /**
-    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.YES)
+    * @SortableField
     */
    optional int64 timestamp = 7;
 
    /**
-    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.YES)
     */
    optional GameStatus gameStatus = 8;
 
@@ -74,32 +79,35 @@ message PlayerScore {
  */
 message Shot {
 
+   /**
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.YES)
+    */
    required string userId = 1;
 
    required string matchId = 2;
 
    /**
-    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.YES)
     */
    optional string gameId = 3;
 
    /**
-    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.YES)
     */
    optional bool human = 4;
 
    /**
-    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.YES)
     */
    optional int64 timestamp = 5;
 
    /**
-    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.YES)
     */
    optional ShotType shotType = 6;
 
    /**
-    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.YES)
     */
    optional ShipType shipType = 7;
 }
