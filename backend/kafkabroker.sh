@@ -375,7 +375,7 @@ data:
       apiVersion: messaging.knative.dev/v1beta1
       kind: KafkaChannel
       spec:
-        numPartitions: 3
+        numPartitions: 100
         replicationFactor: 1
 EOT
   )"
@@ -397,14 +397,14 @@ spec:
           apiVersion: messaging.knative.dev/v1beta1
           kind: KafkaChannel
           spec:
-            numPartitions: 10
+            numPartitions: 100
             replicationFactor: 1
     config-br-default-channel:
       channelTemplateSpec: |
         apiVersion: messaging.knative.dev/v1beta1
         kind: KafkaChannel
         spec:
-          numPartitions: 5
+          numPartitions: 100
           replicationFactor: 1
 EOT
 )"
@@ -423,7 +423,7 @@ data:
     apiVersion: messaging.knative.dev/v1beta1
     kind: KafkaChannel
     spec:
-      numPartitions: 5
+      numPartitions: 100
       replicationFactor: 1
 EOT
   )
