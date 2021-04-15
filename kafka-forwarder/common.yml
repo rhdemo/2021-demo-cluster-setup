@@ -14,6 +14,8 @@ parameters:
     value: kafka-forwarder-config
   - name: LOG_LEVEL
     required: true
+  - name: FUNCTION_LOG_LEVEL
+    value: warn
   - name: KAFKA_SVC_USERNAME
     required: true
   - name: KAFKA_SVC_PASSWORD
@@ -43,4 +45,5 @@ objects:
       NODE_ENV: ${NODE_ENV}
       CLUSTER_NAME: ${CLUSTER_NAME}
       LOG_LEVEL: ${LOG_LEVEL}
+      FUNCTION_LOG_LEVEL: ${FUNCTION_LOG_LEVEL}
       KAFKA_BOOTSTRAP_URL: ${KAFKA_BOOTSTRAP_URL}
