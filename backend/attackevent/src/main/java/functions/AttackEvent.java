@@ -52,8 +52,6 @@ public class AttackEvent
       // Setup Watchman
       Watchman watchman = new Watchman( _watchmanURL );
 
-      System.out.println("Attack Event Received..." );
-
       //Process the payload
       try
       {
