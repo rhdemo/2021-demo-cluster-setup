@@ -12,9 +12,9 @@ builderMap:
 envVars:
   SCORINGSERVICE: http://scoring-service.battleships-scoring.svc.cluster.local:8080/
   WATCHMAN: http://watchman.battleships-backend.svc.cluster.local:8080/watch
-  CARRIER_SCORE: 250
-  DESTROYER_SCORE: 50
-  SUBMARINE_SCORE: 100
+  CARRIER_SCORE: 100
+  DESTROYER_SCORE: 250
+  SUBMARINE_SCORE: 150
   BATTLESHIP_SCORE: 200
   HIT_SCORE: 5
-  PRODMODE: dev
+  PRODMODE: production

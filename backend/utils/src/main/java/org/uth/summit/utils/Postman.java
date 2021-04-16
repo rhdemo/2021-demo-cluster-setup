@@ -15,8 +15,8 @@ public class Postman
   {
     try
     {
-      System.out.println( "Posting to " + _target );
-      System.out.println( "  (Optional Payload: " + optionalPayload + ")");
+      //System.out.println( "Posting to " + _target );
+      //System.out.println( "  (Optional Payload: " + optionalPayload + ")");
 
       URL url = new URL(_target);
       HttpURLConnection postConnection = (HttpURLConnection)url.openConnection();
@@ -28,7 +28,7 @@ public class Postman
 
       int responseCode = postConnection.getResponseCode();
 
-      System.out.println( responseCode + " from " + _target );
+      //System.out.println( responseCode + " from " + _target );
 
       return true;
     }

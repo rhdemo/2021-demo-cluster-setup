@@ -15,7 +15,9 @@ import io.vertx.core.json.JsonObject;
 import javax.inject.Inject;
 import java.net.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
+import java.text.*;
 
 import org.uth.summit.utils.*;
 
@@ -49,8 +51,6 @@ public class AttackEvent
     {
       // Setup Watchman
       Watchman watchman = new Watchman( _watchmanURL );
-
-      System.out.println("Attack Event Received..." );
 
       //Process the payload
       try
@@ -146,6 +146,11 @@ public class AttackEvent
           {
             System.out.println( "Failed to update Scoring Service");
           }
+
+          // TIMESTAMP DEBUG
+          DateFormat formatter = new SimpleDateFormat("HH:mm:ss" ); 
+          String sent = formatter.format( new Date( output.getTs()));
+          System.out.println( "(Timing) Recv: " + LocalTime.now() + " Sent: " + sent );
 
           return output;
         }
