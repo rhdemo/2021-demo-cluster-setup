@@ -140,7 +140,7 @@ public class AttackEvent
 
           // TIMESTAMP DEBUG
           DateFormat formatter = new SimpleDateFormat("HH:mm:ss" ); 
-          String sent = formatter.format( new Date( output.getTs()));
+          String sent = formatter.format( new Date( ts ));
           System.out.println( "(Timing) Recv: " + LocalTime.now() + " Sent: " + sent );
         }
 
