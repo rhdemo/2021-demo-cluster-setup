@@ -140,7 +140,7 @@ objects:
       name: ${APPLICATION_NAME}
     spec:
       port:
-        targetPort: ${HTTP_POT}
+        targetPort: ${HTTP_PORT}
       to:
         kind: Service
         name: ${APPLICATION_NAME}-0
