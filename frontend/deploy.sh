@@ -2,11 +2,15 @@
 
 printf "\n\n######## frontend/deploy ########\n"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-PROJECT=${PROJECT:-frontend}
+PROJECT=${PROJECT:-frontendtest}
 CLUSTER_NAME=${CLUSTER_NAME:-Default}
 ROLLOUT_STRATEGY=${ROLLOUT_STRATEGY:-Rolling}
-LOG_LEVEL=${LOG_LEVEL:-info}
-WSS_BACKEND_NAME=game-server
+
+# Log level for Node.js service must be converted to lowercase
+LOG_LEVEL=$(echo "${LOG_LEVEL:-info}" | tr "[:upper:]" "[:lower:]")
+
+GAME_BACKEND_NAME=game-server
+GAME_FRONTEND_NAME=game
 
 oc project ${PROJECT} 2> /dev/null || oc new-project ${PROJECT}
 
@@ -23,13 +27,14 @@ oc process -f "${DIR}/admin.yml" \
 # Deploys the game websocket server
 oc process -f "${DIR}/game-server.yml" \
 -p NAMESPACE="${PROJECT}" \
--p APPLICATION_NAME="${WSS_BACKEND_NAME}" \
+-p APPLICATION_NAME="${GAME_BACKEND_NAME}" \
 -p AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}" \
 -p AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
 -p ROLLOUT_STRATEGY="${ROLLOUT_STRATEGY}" | oc create -f -
 
 # Deploys the NGINX UI serving bits
 oc process -f "${DIR}/game-ui.yml" \
+-p APPLICATION_NAME="${GAME_FRONTEND_NAME}" \
 -p ROLLOUT_STRATEGY="${ROLLOUT_STRATEGY}" | oc create -f -
 
 # TODO: configure ingress for the summit domain
