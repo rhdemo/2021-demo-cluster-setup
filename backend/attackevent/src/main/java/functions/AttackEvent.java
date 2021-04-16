@@ -109,12 +109,11 @@ public class AttackEvent
           System.out.println( "Failed to update SHOTS cache");
         }
 
+        int delta = 0;
+
         // *If* we hit emit a score event for game server and scoring service cache
         if( hit )
         {
-          // Calculate score delta
-          int delta = 0;
-
           // If we haven't destroyed anything just increment the score using the HIT_SCORE if it exists
           if( destroyed == null )
           {
@@ -130,14 +129,6 @@ public class AttackEvent
             delta = ( envValue == null ? DEFAULT_DESTROYED_SCORE : Integer.parseInt(envValue) );
           }
 
-          output.setGame(game);
-          output.setMatch(match);
-          output.setUuid(uuid);
-          output.setHostname( hostname );
-          output.setTs(ts);
-          output.setDelta(Integer.valueOf(delta));
-          output.setHuman(human);
-
           // Post to Scoring Service
           String compositePostURL = _scoringServiceURL + "scoring/" + game + "/" + match + "/" + uuid + "?delta=" + delta + "&human=" + human + "&username=" + username + "&timestamp=" + ts;
 
@@ -151,11 +142,17 @@ public class AttackEvent
           DateFormat formatter = new SimpleDateFormat("HH:mm:ss" ); 
           String sent = formatter.format( new Date( output.getTs()));
           System.out.println( "(Timing) Recv: " + LocalTime.now() + " Sent: " + sent );
-
-          return output;
         }
 
-        return null;
+        output.setGame(game);
+        output.setMatch(match);
+        output.setUuid(uuid);
+        output.setHostname( hostname );
+        output.setTs(ts);
+        output.setDelta(Integer.valueOf(delta));
+        output.setHuman(human);
+
+        return output;
       }
       catch( Exception exc )
       {
