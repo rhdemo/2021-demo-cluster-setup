@@ -92,3 +92,20 @@ Update the *.env* with `TRUSTSTORE_PASSWORD` set to the password for the
 ```
 make kafka-streams
 ```
+
+### 4. Deploy the Dashboard
+
+This is similar to the Kafka Streams applications. Only needs to be deployed into a single cluster.
+
+Find the HTTP URLs for the Kafka Streams applications deployed in the previous section, set them in the .env like so:
+
+```
+DASHBOARD_REPLAY_SERVER=https://kafka-streams.app.some-cluster.com
+DASHBOARD_GAME_SERVER=https://other-kafka-streams.app.some-cluster.com
+```
+
+Now run the deployment:
+
+```
+make dashboard
+```

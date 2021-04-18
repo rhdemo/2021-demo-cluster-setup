@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: Template
+
+labels:
+  application: dashboard-ui
+
+metadata:
+  name: dashboard-ui
+
+parameters:
+  - name: LEADERBOARD_SERVER
+    value: leaderboard-service.battleships-leaderboard.svc.cluster.local:8080
+    required: true
+  - name: STATS_SERVER
+    value: leaderboard-service.battleships-leaderboard.svc.cluster.local:8080
+    required: true
+  - name: REPLAY_SERVER
+    required: true
+  - name: GAME_SERVER
+    required: true
+
+objects:
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: dashboard-ui
+      labels:
+        app: dashboard-ui
+        app.kubernetes.io/component: dashboard-ui
+        app.kubernetes.io/instance: dashboard-ui
+        app.kubernetes.io/part-of: dashboard-ui-app
+        app.openshift.io/runtime-version: latest
+    spec:
+      ports:
+        - name: 8000-tcp
+          protocol: TCP
+          port: 8000
+          targetPort: 8000
+      selector:
+        app: dashboard-ui
+        deploymentconfig: dashboard-ui
+      type: ClusterIP
+      sessionAffinity: None
+
+  - kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      name: dashboard-ui
+      namespace: dashboard-ui
+      labels:
+        app: dashboard-ui
+        app.kubernetes.io/component: dashboard-ui
+        app.kubernetes.io/instance: dashboard-ui
+        app.kubernetes.io/part-of: dashboard-ui-app
+        app.openshift.io/runtime-version: latest
+    spec:
+      to:
+        kind: Service
+        name: dashboard-ui
+        weight: 100
+      port:
+        targetPort: 8000-tcp
+      wildcardPolicy: None
+
+  - kind: Deployment
+    apiVersion: apps/v1
+    metadata:
+      name: dashboard-ui
+      labels:
+        app: dashboard-ui
+        app.kubernetes.io/component: dashboard-ui
+        app.kubernetes.io/instance: dashboard-ui
+        app.kubernetes.io/part-of: dashboard-ui-app
+        app.openshift.io/runtime: redhat
+        app.openshift.io/runtime-namespace: dashboard-ui
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: dashboard-ui
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            app: dashboard-ui
+            deploymentconfig: dashboard-ui
+        spec:
+          containers:
+            - name: dashboard-ui
+              image: quay.io/redhatdemo/2021-dashboard-ui  
+              ports:
+                - containerPort: 8000
+                  protocol: TCP
+              env:
+                - name: LEADERBOARD_SERVER
+                  value: ${LEADERBOARD_SERVER}
+                - name: STATS_SERVER
+                  value: ${STATS_SERVER}
+                - name: REPLAY_SERVER
+                  value: ${REPLAY_SERVER}
+                - name: GAME_SERVER
+                  value: ${GAME_SERVER}
+              resources: {}
+              imagePullPolicy: Always
+          restartPolicy: Always
+          terminationGracePeriodSeconds: 30
+          dnsPolicy: ClusterFirst
+          securityContext: {}
+      strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 25%
+          maxSurge: 25%
+      revisionHistoryLimit: 10
+      progressDeadlineSeconds: 600

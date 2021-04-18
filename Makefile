@@ -51,5 +51,11 @@ backend: oc_login
 backend-undeploy: oc_login
 	./backend/undeploy.sh
 
+dashboard: oc_login
+	./dashboard/deploy.sh
+
+dashboard-undeploy: oc_login
+	./dashboard/undeploy.sh
+
 serverless: oc_login
 	./backend/kafkabroker.sh
