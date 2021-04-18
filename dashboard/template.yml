@@ -87,7 +87,7 @@ objects:
         spec:
           containers:
             - name: dashboard-ui
-              image: quay.io/redhatdemo/2021-dashboard-ui  
+              image: quay.io/redhatdemo/2021-dashboard-ui
               ports:
                 - containerPort: 8000
                   protocol: TCP
