@@ -2,7 +2,7 @@
 
 printf "\n\n######## frontend/deploy ########\n"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-PROJECT=${PROJECT:-frontendtest}
+PROJECT=${PROJECT:-frontend}
 CLUSTER_NAME=${CLUSTER_NAME:-Default}
 ROLLOUT_STRATEGY=${ROLLOUT_STRATEGY:-Rolling}
 
