@@ -86,7 +86,7 @@ objects:
     metadata:
       labels:
         app: ${APPLICATION_NAME}
-      name: ${APPLICATION_NAME}
+      name: game
     spec:
       port:
         targetPort: 8080
