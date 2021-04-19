@@ -50,7 +50,7 @@ public class AttackEventHttp
       {
         try 
         {
-          URL url = new URL("");  
+          URL url = new URL("http://broker-ingress.knative-eventing.svc.cluster.local/battleships-backend/default");  
           
           MessageOutput output = buildResponse(input);
           String eventType = ( output.getHostname() == null ? "bonusprocessed" : "bonusprocessed-" + output.getHostname() );
