@@ -44,7 +44,7 @@ public class AttackEventHttp
     String _prodmode;
 
     @Funq
-    public void processor( String input )
+    public void processorHttp( String input )
     {
       executor.execute(() ->
       {
