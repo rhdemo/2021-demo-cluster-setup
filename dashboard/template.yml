@@ -9,10 +9,10 @@ metadata:
 
 parameters:
   - name: LEADERBOARD_SERVER
-    value: leaderboard-service.battleships-leaderboard.svc.cluster.local:8080
+    value: ${LEADERBOARD_SERVER}
     required: true
   - name: STATS_SERVER
-    value: leaderboard-service.battleships-leaderboard.svc.cluster.local:8080
+    value: ${STATS_SERVER}
     required: true
   - name: REPLAY_SERVER
     required: true
