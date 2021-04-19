@@ -53,7 +53,7 @@ public class AttackEventHttp
           URL url = new URL("http://broker-ingress.knative-eventing.svc.cluster.local/battleships-backend/default");  
           
           MessageOutput output = buildResponse(input);
-          String eventType = ( output.getHostname() == null ? "bonusprocessed" : "bonusprocessed-" + output.getHostname() );
+          String eventType = ( output.getHostname() == null ? "attackprocessed" : "attackprocessed-" + output.getHostname() );
 
           HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
           httpURLConnection.setRequestMethod("POST");
