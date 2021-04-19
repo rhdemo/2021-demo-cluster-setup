@@ -43,6 +43,7 @@ public class BonusEvent
       String eventName = ( output.getHostname() == null ? "bonusprocessed" : "bonusprocessed-" + output.getHostname() );
 
       return CloudEventBuilder.create()
+        .extensions(Map.of("partitionkey", output.getGame() + ":" + output.getMatch()))
         .type(eventName)
         .build(output);      
     }
