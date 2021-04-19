@@ -19,5 +19,8 @@ kn service create attack --image quay.io/ilawson/attack --env SCORINGSERVICE=htt
 kn service create bonus --image quay.io/ilawson/bonus --env SCORINGSERVICE=http://scoring-service.battleships-scoring.svc.cluster.local:8080/ --env WATCHMAN=http://watchman.battleships-backend.svc.cluster.local:8080/watch --env BONUS_SCORE=1 --env PRODMODE=production
 kn service create matchend --image quay.io/ilawson/matchend --env SCORINGSERVICE=http://scoring-service.battleships-scoring.svc.cluster.local:8080/ --env WATCHMAN=http://watchman.battleships-backend.svc.cluster.local:8080/watch --env PRODMODE=production
 kn service create matchstart --image quay.io/ilawson/matchstart  --env SCORINGSERVICE=http://scoring-service.battleships-scoring.svc.cluster.local:8080/ --env WATCHMAN=http://watchman.battleships-backend.svc.cluster.local:8080/watch --env PRODMODE=production
+kn service update attack --scale-min=10
+kn service update bonus --scale-min=10
+
 
 
