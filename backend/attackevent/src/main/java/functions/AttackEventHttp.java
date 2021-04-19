@@ -65,8 +65,8 @@ public class AttackEventHttp
           httpURLConnection.setRequestProperty("ce-source", "attack");
           httpURLConnection.setRequestProperty("ce-partitionkey", output.getGame() + ":" + output.getMatch());
 
-          httpURLConnection.setDoOutput(false);
-          httpURLConnection.setDoInput(true);
+          httpURLConnection.setDoOutput(true);
+          httpURLConnection.setDoInput(false);
 
           // Encode the created object into JSON
           String jsonOutput = Json.encode(output);
