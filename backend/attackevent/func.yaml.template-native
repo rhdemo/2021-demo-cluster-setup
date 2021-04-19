@@ -18,3 +18,5 @@ envVars:
   BATTLESHIP_SCORE: 200
   HIT_SCORE: 5
   PRODMODE: production
+  NAMESPACE: battleships-backend
+  BROKER: default

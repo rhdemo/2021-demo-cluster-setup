@@ -43,6 +43,12 @@ public class AttackEventHttp
     @ConfigProperty(name = "PRODMODE")
     String _prodmode;
 
+    @ConfigProperty(name = "NAMESPACE")
+    String _namespace;
+
+    @ConfigProperty(name = "BROKER")
+    String _broker;
+
     @Funq
     public void processorHttp( String input )
     {
@@ -50,7 +56,7 @@ public class AttackEventHttp
       {
         try 
         {
-          URL url = new URL("http://broker-ingress.knative-eventing.svc.cluster.local/battleships-backend/default");  
+          URL url = new URL("http://broker-ingress.knative-eventing.svc.cluster.local/" + _namespace + "/" + _broker );  
           
           MessageOutput output = buildResponse(input);
           String eventType = ( output.getHostname() == null ? "attackprocessed" : "attackprocessed-" + output.getHostname() );

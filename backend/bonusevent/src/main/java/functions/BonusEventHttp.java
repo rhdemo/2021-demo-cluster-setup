@@ -9,6 +9,7 @@ import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.subscription.UniEmitter;
 import io.vertx.core.Vertx;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.context.ManagedExecutor;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.json.Json;
@@ -30,7 +31,7 @@ public class BonusEventHttp
     private long start = System.currentTimeMillis();
 
     @Inject
-    Executor executor;
+    ManagedExecutor executor;
 
     @ConfigProperty(name = "WATCHMAN")
     String _watchmanURL;
@@ -41,6 +42,12 @@ public class BonusEventHttp
     @ConfigProperty(name = "PRODMODE")
     String _prodmode;
 
+    @ConfigProperty(name = "NAMESPACE")
+    String _namespace;
+
+    @ConfigProperty(name = "BROKER")
+    String _broker;
+
     @Funq
     public void processorHttp( String input )
     {
@@ -48,7 +55,7 @@ public class BonusEventHttp
       {
         try 
         {
-          URL url = new URL("http://broker-ingress.knative-eventing.svc.cluster.local/battleships-backend/default");  
+          URL url = new URL("http://broker-ingress.knative-eventing.svc.cluster.local/" + _namespace + "/" + _broker);  
           
           MessageOutput output = buildResponse(input);
           String eventType = ( output.getHostname() == null ? "bonusprocessed" : "bonusprocessed-" + output.getHostname() );
