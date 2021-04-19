@@ -15,7 +15,7 @@ oc apply -f $DIR/matchend/trigger-match-end.yaml
 oc apply -f $DIR/matchstart/trigger-match-start.yaml
 
 printf "Creating functions"
-kn service create attack --image quay.io/ilawson/attack --env SCORINGSERVICE=http://scoring-service.battleships-scoring.svc.cluster.local:8080/ --env WATCHMAN=http://watchman.battleships-backend.svc.cluster.local:8080/watch --env CARRIER_SCORE=250 --env DESTROYER_SCORE=50 --env SUBMARINE_SCORE=100 --env BATTLESHIP_SCORE=200 --env HIT_SCORE=5 --env PRODMODE=production
+kn service create attack --image quay.io/ilawson/attack --env SCORINGSERVICE=http://scoring-service.battleships-scoring.svc.cluster.local:8080/ --env WATCHMAN=http://watchman.battleships-backend.svc.cluster.local:8080/watch --env CARRIER_SCORE=100 --env DESTROYER_SCORE=250 --env SUBMARINE_SCORE=150 --env BATTLESHIP_SCORE=200 --env HIT_SCORE=5 --env PRODMODE=production
 kn service create bonus --image quay.io/ilawson/bonus --env SCORINGSERVICE=http://scoring-service.battleships-scoring.svc.cluster.local:8080/ --env WATCHMAN=http://watchman.battleships-backend.svc.cluster.local:8080/watch --env BONUS_SCORE=1 --env PRODMODE=production
 kn service create matchend --image quay.io/ilawson/matchend --env SCORINGSERVICE=http://scoring-service.battleships-scoring.svc.cluster.local:8080/ --env WATCHMAN=http://watchman.battleships-backend.svc.cluster.local:8080/watch --env PRODMODE=production
 kn service create matchstart --image quay.io/ilawson/matchstart  --env SCORINGSERVICE=http://scoring-service.battleships-scoring.svc.cluster.local:8080/ --env WATCHMAN=http://watchman.battleships-backend.svc.cluster.local:8080/watch --env PRODMODE=production
