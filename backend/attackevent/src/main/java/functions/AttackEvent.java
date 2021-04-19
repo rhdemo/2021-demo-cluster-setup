@@ -43,6 +43,7 @@ public class AttackEvent
       String eventName = ( output.getHostname() == null ? "attackprocessed" : "attackprocessed-" + output.getHostname() );
 
       return CloudEventBuilder.create()
+        .id(output.getGame() + ":" + output.getMatch())
         .type(eventName)
         .build(output);      
     }
