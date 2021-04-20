@@ -79,6 +79,7 @@ public class BonusEventHttp
           OutputStream postedOutput = httpURLConnection.getOutputStream();
           byte[] payload = jsonOutput.getBytes("utf-8");
           postedOutput.write(payload, 0,  payload.length);
+          postedOutput.close();
         } 
         catch( Exception exc ) 
         {
