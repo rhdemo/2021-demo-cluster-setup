@@ -72,7 +72,7 @@ public class AttackEventHttp
           httpURLConnection.setRequestProperty("ce-partitionkey", output.getGame() + ":" + output.getMatch());
 
           httpURLConnection.setDoOutput(true);
-          httpURLConnection.setDoInput(false);
+          httpURLConnection.setDoInput(true);
 
           // DEBUG
           System.out.println( "EMITTING " + eventType + " at " + LocalTime.now());
