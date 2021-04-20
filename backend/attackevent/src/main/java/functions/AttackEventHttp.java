@@ -74,6 +74,9 @@ public class AttackEventHttp
           httpURLConnection.setDoOutput(true);
           httpURLConnection.setDoInput(false);
 
+          // DEBUG
+          System.out.println( "EMITTING " + eventType + " at " + LocalTime.now());
+
           // Encode the created object into JSON
           String jsonOutput = Json.encode(output);
 
