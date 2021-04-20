@@ -66,6 +66,7 @@ public class BonusEventHttp
 
           // Set the Cloud Event properties
           httpURLConnection.setRequestProperty("ce-type", eventType );
+          httpURLConnection.setRequestProperty("ce-id", Long.toString(System.currentTimeMillis()) + output.getGame() + output.getMatch());
           httpURLConnection.setRequestProperty("ce-specversion", "1.0");
           httpURLConnection.setRequestProperty("ce-source", "attack");
           httpURLConnection.setRequestProperty("ce-partitionkey", output.getGame() + ":" + output.getMatch());
