@@ -90,9 +90,6 @@ public class AttackEventHttp
 
           // DEBUG
           System.out.println( "Response from Broker: " + httpURLConnection.getResponseCode());
-
-
-          httpURLConnection.close();
         } 
         catch( Exception exc ) 
         {
