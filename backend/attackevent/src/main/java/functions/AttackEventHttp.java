@@ -75,22 +75,13 @@ public class AttackEventHttp
           httpURLConnection.setDoOutput(true);
           httpURLConnection.setDoInput(true);
 
-          // DEBUG
-          System.out.println( "EMITTING " + eventType + " at " + LocalTime.now());
-
           // Encode the created object into JSON
           String jsonOutput = Json.encode(output);
-
-          // DEBUG
-          System.out.println( "Encoded: " +jsonOutput );
 
           OutputStream postedOutput = httpURLConnection.getOutputStream();
           byte[] payload = jsonOutput.getBytes("utf-8");
           postedOutput.write(payload, 0,  payload.length);
           postedOutput.close();
-
-          // DEBUG
-          System.out.println( "Response from Broker: " + httpURLConnection.getResponseCode());
         } 
         catch( Exception exc ) 
         {
