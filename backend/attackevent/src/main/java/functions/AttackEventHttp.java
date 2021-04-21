@@ -9,10 +9,14 @@ import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.subscription.UniEmitter;
 import io.vertx.core.Vertx;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.context.ManagedExecutor;
 
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.json.Json;
 
 import javax.inject.Inject;
+import java.util.concurrent.*;
+import java.io.*;
 import java.net.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -21,11 +25,14 @@ import java.text.*;
 
 import org.uth.summit.utils.*;
 
-public class AttackEvent 
+public class AttackEventHttp 
 {
     private static final int DEFAULT_DESTROYED_SCORE = 100;
     private static final int DEFAULT_HIT_SCORE = 5;
     private long start = System.currentTimeMillis();
+
+    @Inject
+    ManagedExecutor executor;
 
     @ConfigProperty(name = "WATCHMAN")
     String _watchmanURL;
@@ -36,17 +43,72 @@ public class AttackEvent
     @ConfigProperty(name = "PRODMODE")
     String _prodmode;
 
-    @Funq
-    public CloudEvent<MessageOutput> processor( String input )  
-    {
-      MessageOutput output = buildResponse( input );
-      String eventName = ( output.getHostname() == null ? "attackprocessed" : "attackprocessed-" + output.getHostname() );
+    @ConfigProperty(name = "NAMESPACE")
+    String _namespace;
 
-      return CloudEventBuilder.create()
-        .id(output.getGame() + ":" + output.getMatch())
-        .type(eventName)
-        .build(output);      
+    @ConfigProperty(name = "BROKER")
+    String _broker;
+
+    @Funq
+    public void processorHttp( String input )
+    {
+      executor.execute(() ->
+      {
+        try 
+        {
+          URL url = new URL("http://broker-ingress.knative-eventing.svc.cluster.local/" + _namespace + "/" + _broker );  
+          
+          MessageOutput output = buildResponse(input);
+          String eventType = ( output.getHostname() == null ? "attackprocessed" : "attackprocessed-" + output.getHostname() );
+
+          HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+          httpURLConnection.setRequestMethod("POST");
+          httpURLConnection.setRequestProperty("Content-Type", "application/json; utf-8");
+
+          // Set the Cloud Event properties
+          httpURLConnection.setRequestProperty("ce-type", eventType );
+          httpURLConnection.setRequestProperty("ce-id", Long.toString(System.currentTimeMillis()) + output.getGame() + output.getMatch());
+          httpURLConnection.setRequestProperty("ce-specversion", "1.0");
+          httpURLConnection.setRequestProperty("ce-source", "attack");
+          httpURLConnection.setRequestProperty("ce-partitionkey", output.getGame() + ":" + output.getMatch());
+
+          httpURLConnection.setDoOutput(true);
+          httpURLConnection.setDoInput(true);
+
+          // DEBUG
+          System.out.println( "EMITTING " + eventType + " at " + LocalTime.now());
+
+          // Encode the created object into JSON
+          String jsonOutput = Json.encode(output);
+
+          // DEBUG
+          System.out.println( "Encoded: " +jsonOutput );
+
+          OutputStream postedOutput = httpURLConnection.getOutputStream();
+          byte[] payload = jsonOutput.getBytes("utf-8");
+          postedOutput.write(payload, 0,  payload.length);
+          postedOutput.close();
+
+          // DEBUG
+          System.out.println( "Response from Broker: " + httpURLConnection.getResponseCode());
+        } 
+        catch( Exception exc ) 
+        {
+          System.out.println( "Post failed due to " + exc.toString());
+        }
+      });
     }
+
+//    public CloudEvent<MessageOutput> processor( String input )  
+//    {
+//      MessageOutput output = buildResponse( input );
+//      String eventName = ( output.getHostname() == null ? "attackprocessed" : "attackprocessed-" + output.getHostname() );
+//
+//      return CloudEventBuilder.create()
+//        .id(output.getGame() + ":" + output.getMatch())
+//        .type(eventName)
+//        .build(output);      
+//    }
  
     public MessageOutput buildResponse( String input )
     {

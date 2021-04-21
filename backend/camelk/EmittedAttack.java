@@ -8,7 +8,7 @@ public class EmittedAttack extends org.apache.camel.builder.RouteBuilder
   public void configure() throws Exception
   {
 
-    from("knative:event/attackprocessed")
+    from("knative:event/attackprocessed-game-server-1")
           .log("Received: ${body}");
   }
 }
