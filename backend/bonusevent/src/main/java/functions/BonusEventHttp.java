@@ -71,7 +71,7 @@ public class BonusEventHttp
           httpURLConnection.setRequestProperty("ce-source", "attack");
           httpURLConnection.setRequestProperty("ce-partitionkey", output.getGame() + ":" + output.getMatch());
 
-          httpURLConnection.setDoOutput(false);
+          httpURLConnection.setDoOutput(true);
           httpURLConnection.setDoInput(true);
 
           // Encode the created object into JSON
