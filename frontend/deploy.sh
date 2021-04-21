@@ -43,4 +43,4 @@ oc process -f "${DIR}/game-ui.yml" \
 # Apply knative triggers in backend to forward score updates to the game server
 oc process -f "${DIR}/knative.triggers.yml" \
 -p NAMESPACE="${PROJECT}" \
--p APPLICATION_NAME="${WSS_BACKEND_NAME}" | oc create -n battleships-backend -f -
+-p APPLICATION_NAME="${GAME_BACKEND_NAME}" | oc create -n battleships-backend -f -
