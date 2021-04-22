@@ -52,7 +52,7 @@ objects:
         app: ${APPLICATION_NAME}
     spec:
       serviceName: ${APPLICATION_NAME}
-      replicas: 2
+      replicas: 3
       selector:
         matchLabels:
           app: ${APPLICATION_NAME}

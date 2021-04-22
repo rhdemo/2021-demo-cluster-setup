@@ -6,7 +6,7 @@ spec:
   image: quay.io/infinispan/server:12.1.0.Final
   container:
     cpu: "1000m"
-    memory: 2Gi
+    memory: 4Gi
   expose:
     type: LoadBalancer
   replicas: 2
@@ -28,6 +28,9 @@ spec:
         - name: GCP
           url: openshift://api.summit-gcp.eior.p2.openshiftapps.com:6443
           secretName: gcp-token
+        - name: AZURE
+          url: openshift://api.g9dkpkud.centralus.aroapp.io:6443
+          secretName: azure-token
   logging:
     categories:
       org.jgroups.protocols.TCP: error

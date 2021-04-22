@@ -23,15 +23,16 @@ eventing_version="v0.20.1"
 eventing_kafka_version="v0.20.0"
 
 # Default version for subscriptions
-VERSION_OPENSHIFT_SERVERLESS="1.13.0"
+VERSION_OPENSHIFT_SERVERLESS="1.14.0"
 
 # Channel to use for subscriptions
-OLM_CHANNEL="4.6"
+OLM_CHANNEL="stable"
 
 #streams versioning
 VERSION_OPENSHIFT_STREAMS="1.6.2"
 STREAMS_OLM_CHANNEL="stable"
 STRIMZI_OLM_CHANNEL="stable"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 }
 function header_text {
@@ -286,7 +287,10 @@ run_with_timeout () {
 install_serverless() {
     mk_environment
 
+    header_text "Strimzi install"
+    apply_project kafka
     apply_openshift_strimzi_subscription
+    apply_strimzi_metrics
     apply_strimzi
 
     #apply_openshift_amq_streams_subscription
@@ -300,6 +304,12 @@ install_serverless() {
 
     #kafka_default_channel
     #kafka_default_broker_channel
+
+}
+
+apply_strimzi_metrics() {
+header_text "Strimzi Metrics CM install"
+oc apply -f $DIR/strimzi_metrics.yaml
 
 }
 
@@ -340,19 +350,57 @@ spec:
       offsets.topic.replication.factor: 3
       transaction.state.log.replication.factor: 3
       transaction.state.log.min.isr: 2
+    resources:
+      requests:
+        cpu: "0.3"
+        memory: 2Gi
+      limits:
+        cpu: "2"
+        memory: 4Gi
+    metricsConfig:
+      type: jmxPrometheusExporter
+      valueFrom:
+        configMapKeyRef:
+          name: kafka-metrics
+          key: kafka-metrics-config.yml
   zookeeper:
     replicas: 3
     storage:
       type: persistent-claim
       size: 100Gi
       deleteClaim: false
+    resources:
+      requests:
+        cpu: "0.250"
+        memory: 1Gi
+      limits:
+        cpu: "1"
+        memory: 2Gi
+    metricsConfig:
+      type: jmxPrometheusExporter
+      valueFrom:
+        configMapKeyRef:
+          name: kafka-metrics
+          key: zookeeper-metrics-config.yml
   entityOperator:
-    topicOperator: {}
-    userOperator: {}
+    topicOperator:
+      resources:
+        requests:
+          memory: 512Mi
+          cpu: "0.250"
+        limits:
+          memory: 512Mi
+          cpu: "1"
+    userOperator:
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: "0.250"
+        limits:
+          memory: 1Gi
+          cpu: "1"
 EOT
 )
-  header_text "Strimzi install"
-  apply_project kafka
 
   header_text "Applying Strimzi Cluster file"
   apply "$kafka"
@@ -419,8 +467,9 @@ EOT
   header_text "* updating default maxIdleConns and maxIdleConnsPerHost settings"
   oc -n knative-eventing patch configmap/config-kafka --type=merge --patch='{"data": {"maxIdleConns": "1000", "maxIdleConnsPerHost": "1000"}}'
 
-  header_text "* update image of the kafka-dispatcher"
-  oc -n openshift-operators get csv/serverless-operator.v1.13.0 -oyaml | sed -e 's,registry.redhat.io/openshift-serverless-1-tech-preview/eventing-kafka-channel-dispatcher-rhel8@sha256:20efa1a9b5178340120325ade89818a2d08f0301234a45782dfd6a9471c36691,registry.ci.openshift.org/openshift/knative-v0.19.1@sha256:e3cc1571db4f6d3f4eb2ae1fd3dfad66bb2de0c2da271a10b12568d763892998,g' | oc replace -f -
+  header_text "* increase kafka-ch-dispatcher deployment replicas to 5"
+  oc -n knative-eventing patch deployment/kafka-ch-dispatcher --patch='{"spec": {"replicas": 5}}'
+
 }
 
 kafka_default_broker_channel() {
