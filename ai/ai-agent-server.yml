@@ -19,11 +19,11 @@ parameters:
   - name: IMAGE_REPOSITORY
     value: quay.io/redhatdemo/2021-ai-agent-server:latest
   - name: CONTAINER_REQUEST_CPU
-    value: 250m
+    value: 1000m
   - name: CONTAINER_REQUEST_MEMORY
     value: 512Mi
   - name: CONTAINER_LIMIT_CPU
-    value: 500m
+    value: 1000m
   - name: CONTAINER_LIMIT_MEMORY
     value: 1024Mi
 
