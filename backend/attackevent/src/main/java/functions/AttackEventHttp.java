@@ -70,7 +70,7 @@ public class AttackEventHttp
           httpURLConnection.setRequestProperty("ce-id", Long.toString(System.currentTimeMillis()) + output.getGame() + output.getMatch());
           httpURLConnection.setRequestProperty("ce-specversion", "1.0");
           httpURLConnection.setRequestProperty("ce-source", "attack");
-          httpURLConnection.setRequestProperty("ce-partitionkey", output.getGame() + ":" + output.getMatch());
+          httpURLConnection.setRequestProperty("ce-partitionkey", output.getMatch());
 
           httpURLConnection.setDoOutput(true);
           httpURLConnection.setDoInput(true);
@@ -78,15 +78,15 @@ public class AttackEventHttp
           // Encode the created object into JSON
           String jsonOutput = Json.encode(output);
 
-          System.out.println( "  Targetting " + url.toString());
-          System.out.println( "  Event Type: " + eventType);
+          //System.out.println( "  Targetting " + url.toString());
+          //System.out.println( "  Event Type: " + eventType);
 
           OutputStream postedOutput = httpURLConnection.getOutputStream();
           byte[] payload = jsonOutput.getBytes("utf-8");
           postedOutput.write(payload, 0,  payload.length);
           postedOutput.close();
 
-          System.out.println( "  Response from broker: " + httpURLConnection.getResponseCode());
+          //System.out.println( "  Response from broker: " + httpURLConnection.getResponseCode());
         } 
         catch( Exception exc ) 
         {
