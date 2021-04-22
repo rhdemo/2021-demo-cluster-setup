@@ -78,15 +78,15 @@ public class AttackEventHttp
           // Encode the created object into JSON
           String jsonOutput = Json.encode(output);
 
-          //System.out.println( "  Targetting " + url.toString());
-          //System.out.println( "  Event Type: " + eventType);
+          System.out.println( "  Targetting " + url.toString());
+          System.out.println( "  Event Type: " + eventType);
 
           OutputStream postedOutput = httpURLConnection.getOutputStream();
           byte[] payload = jsonOutput.getBytes("utf-8");
           postedOutput.write(payload, 0,  payload.length);
           postedOutput.close();
 
-          //System.out.println( "  Response from broker: " + httpURLConnection.getResponseCode());
+          System.out.println( "  Response from broker: " + httpURLConnection.getResponseCode());
         } 
         catch( Exception exc ) 
         {
