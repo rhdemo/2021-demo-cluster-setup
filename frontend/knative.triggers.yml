@@ -41,6 +41,18 @@ objects:
   - apiVersion: eventing.knative.dev/v1
     kind: Trigger
     metadata:
+      name: ${APPLICATION_NAME}-scores-2
+    spec:
+      broker: default
+      filter:
+        attributes:
+          type: attackprocessed-${APPLICATION_NAME}-2
+      subscriber:
+        uri: http://${APPLICATION_NAME}-2.${NAMESPACE}.svc.cluster.local:8080/event/trigger
+
+  - apiVersion: eventing.knative.dev/v1
+    kind: Trigger
+    metadata:
       name: ${APPLICATION_NAME}-bonuses-0
     spec:
       broker: default
@@ -61,3 +73,15 @@ objects:
           type: bonusprocessed-${APPLICATION_NAME}-1
       subscriber:
         uri: http://${APPLICATION_NAME}-1.${NAMESPACE}.svc.cluster.local:8080/event/trigger
+
+  - apiVersion: eventing.knative.dev/v1
+    kind: Trigger
+    metadata:
+      name: ${APPLICATION_NAME}-bonuses-2
+    spec:
+      broker: default
+      filter:
+        attributes:
+          type: bonusprocessed-${APPLICATION_NAME}-2
+      subscriber:
+        uri: http://${APPLICATION_NAME}-2.${NAMESPACE}.svc.cluster.local:8080/event/trigger
