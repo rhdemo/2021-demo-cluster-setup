@@ -9,3 +9,8 @@ function aws() {
     // TODO update
     oc login --token= --server=
 }
+
+function azure() {
+    // TODO update
+    oc login --token= --server=
+}

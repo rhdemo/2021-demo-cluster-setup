@@ -1,7 +1,8 @@
 DG_DEMO_IMAGE=quay.io/redhatdemo/datagrid:2021
 DG_NAMESPACE=
 DG_LOCAL_SITE=
-DG_REMOTE_SITE=
+DG_REMOTE_SITE_1=
+DG_REMOTE_SITE_2=
 
 
 .PHONY: operator/namespace
@@ -45,6 +46,7 @@ cluster/xsite/tokens: operator/namespace
 cluster/xsite/secrets:
 	@oc create secret generic aws-token --from-literal=token=$(shell cat tokens/aws/token) -n $(DG_NAMESPACE)
 	@oc create secret generic gcp-token --from-literal=token=$(shell cat tokens/gcp/token) -n $(DG_NAMESPACE)
+	@oc create secret generic azure-token --from-literal=token=$(shell cat tokens/azure/token) -n $(DG_NAMESPACE)
 
 .PHONY: cluster/xsite/deploy
 cluster/xsite/deploy:
@@ -53,11 +55,11 @@ cluster/xsite/deploy:
 .PHONY: caches/xsite/deploy
 caches/xsite/deploy:
 	@for i in {1..30}; do oc wait --for condition=established --timeout=60s crd/infinispans.infinispan.org -n $(DG_NAMESPACE) && break || sleep 1; done
-	@sed -e '/CACHE_CONFIG/ {' -e 'r ./operator/game-cache-xsite.xml' -e 'd' -e '}' ./operator/cache-cr-template.yaml | sed "s/CACHE_NAME/game/g; s/BACKUP_SITE/$(DG_REMOTE_SITE)/g" | oc apply -n $(DG_NAMESPACE) -f - ;
+	@sed -e '/CACHE_CONFIG/ {' -e 'r ./operator/game-cache-xsite.xml' -e 'd' -e '}' ./operator/cache-cr-template.yaml | sed "s/CACHE_NAME/game/g; s/BACKUP_SITE_1/$(DG_REMOTE_SITE_1)/g; s/BACKUP_SITE_2/$(DG_REMOTE_SITE_2)/g" | oc apply -n $(DG_NAMESPACE) -f - ;
 	@oc -n $(DG_NAMESPACE) create configmap datagrid-batch --from-file=config/
 	@oc -n $(DG_NAMESPACE) apply -f operator/batch.yaml
-	@sed -e '/CACHE_CONFIG/ {' -e 'r ./operator/index-cache-xsite.xml' -e 'd' -e '}' ./operator/cache-cr-template.yaml | sed "s/CACHE_NAME/players-shots/g; s/INDEXED_ENTITY/com.redhat.Shot/g; s/BACKUP_SITE/$(DG_REMOTE_SITE)/g" | oc apply -n $(DG_NAMESPACE) -f - ;
-	@sed -e '/CACHE_CONFIG/ {' -e 'r ./operator/index-cache-xsite.xml' -e 'd' -e '}' ./operator/cache-cr-template.yaml | sed "s/CACHE_NAME/players-scores/g; s/INDEXED_ENTITY/com.redhat.PlayerScore/g; s/BACKUP_SITE/$(DG_REMOTE_SITE)/g" | oc apply -n $(DG_NAMESPACE) -f - ;
+	@sed -e '/CACHE_CONFIG/ {' -e 'r ./operator/index-cache-xsite.xml' -e 'd' -e '}' ./operator/cache-cr-template.yaml | sed "s/CACHE_NAME/players-shots/g; s/INDEXED_ENTITY/com.redhat.Shot/g; s/BACKUP_SITE_1/$(DG_REMOTE_SITE_1)/g; s/BACKUP_SITE_2/$(DG_REMOTE_SITE_2)/g" | oc apply -n $(DG_NAMESPACE) -f - ;
+	@sed -e '/CACHE_CONFIG/ {' -e 'r ./operator/index-cache-xsite.xml' -e 'd' -e '}' ./operator/cache-cr-template.yaml | sed "s/CACHE_NAME/players-scores/g; s/INDEXED_ENTITY/com.redhat.PlayerScore/g; s/BACKUP_SITE_1/$(DG_REMOTE_SITE_1)/g; s/BACKUP_SITE_2/$(DG_REMOTE_SITE_2)/g" | oc apply -n $(DG_NAMESPACE) -f - ;
 
 .PHONY: deploy
 deploy: operator/install cluster/deploy caches/deploy
