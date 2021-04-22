@@ -1,7 +1,7 @@
 name: bonus
 namespace: ""
 runtime: quarkus
-image: quay.io/ilawson/bonus
+image: quay.io/redhatdemo/2021-backend-bonus
 imageDigest: ""
 trigger: events
 builder: quay.io/boson/faas-quarkus-jvm-builder

@@ -75,22 +75,18 @@ public class AttackEventHttp
           httpURLConnection.setDoOutput(true);
           httpURLConnection.setDoInput(true);
 
-          // DEBUG
-          System.out.println( "EMITTING " + eventType + " at " + LocalTime.now());
-
           // Encode the created object into JSON
           String jsonOutput = Json.encode(output);
 
-          // DEBUG
-          System.out.println( "Encoded: " +jsonOutput );
+          System.out.println( "  Targetting " + url.toString());
+          System.out.println( "  Event Type: " + eventType);
 
           OutputStream postedOutput = httpURLConnection.getOutputStream();
           byte[] payload = jsonOutput.getBytes("utf-8");
           postedOutput.write(payload, 0,  payload.length);
           postedOutput.close();
 
-          // DEBUG
-          System.out.println( "Response from Broker: " + httpURLConnection.getResponseCode());
+          System.out.println( "  Response from broker: " + httpURLConnection.getResponseCode());
         } 
         catch( Exception exc ) 
         {
@@ -177,19 +173,21 @@ public class AttackEventHttp
         // *If* we hit emit a score event for game server and scoring service cache
         if( hit )
         {
+          String envValue = System.getenv("HIT_SCORE");
+
           // If we haven't destroyed anything just increment the score using the HIT_SCORE if it exists
           if( destroyed == null )
           {
-            String envValue = System.getenv("HIT_SCORE");
             delta = ( envValue == null ? DEFAULT_HIT_SCORE : Integer.parseInt(envValue) );
           }
           else
           {
             // Otherwise we destroyed something; use (type)[uppercased]_SCORE instead
             String targetShipENV = destroyed.toUpperCase() + "_SCORE";
-            String envValue = System.getenv(targetShipENV);
+            String sinkEnvValue = System.getenv(targetShipENV);
 
-            delta = ( envValue == null ? DEFAULT_DESTROYED_SCORE : Integer.parseInt(envValue) );
+            delta = ( sinkEnvValue == null ? DEFAULT_DESTROYED_SCORE : Integer.parseInt(sinkEnvValue) );
+            delta += ( envValue == null ? DEFAULT_HIT_SCORE : Integer.parseInt(envValue) );
           }
 
           // Post to Scoring Service

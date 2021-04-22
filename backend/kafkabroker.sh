@@ -408,7 +408,19 @@ spec:
           replicationFactor: 1
 EOT
 )"
+  header_text "* Applying defaults to knative-eventing kafkachannel defaults"
   apply "$adjust_knative_eventing"
+
+  header_text "* increase mt-broker-filter deployment replicas to 5"
+  oc -n knative-eventing patch deployment/mt-broker-filter --patch='{"spec": {"replicas": 5}}'
+  header_text "* increase mt-broker-ingress deployment replicas to 5"
+  oc -n knative-eventing patch deployment/mt-broker-ingress --patch='{"spec": {"replicas": 5}}'
+
+  header_text "* updating default maxIdleConns and maxIdleConnsPerHost settings"
+  oc -n knative-eventing patch configmap/config-kafka --type=merge --patch='{"data": {"maxIdleConns": "1000", "maxIdleConnsPerHost": "1000"}}'
+
+  header_text "* update image of the kafka-dispatcher"
+  oc -n openshift-operators get csv/serverless-operator.v1.13.0 -oyaml | sed -e 's,registry.redhat.io/openshift-serverless-1-tech-preview/eventing-kafka-channel-dispatcher-rhel8@sha256:20efa1a9b5178340120325ade89818a2d08f0301234a45782dfd6a9471c36691,registry.ci.openshift.org/openshift/knative-v0.19.1@sha256:e3cc1571db4f6d3f4eb2ae1fd3dfad66bb2de0c2da271a10b12568d763892998,g' | oc replace -f -
 }
 
 kafka_default_broker_channel() {
