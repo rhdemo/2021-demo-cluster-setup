@@ -1,7 +1,7 @@
 name: matchend
 namespace: ""
 runtime: quarkus
-image: quay.io/ilawson/matchend
+image: quay.io/redhatdemo/2021-backend-matchend
 imageDigest: ""
 trigger: events
 builder: quay.io/boson/faas-quarkus-jvm-builder
