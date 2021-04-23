@@ -52,7 +52,7 @@ objects:
         app: ${APPLICATION_NAME}
     spec:
       serviceName: ${APPLICATION_NAME}
-      replicas: 3
+      replicas: 4
       selector:
         matchLabels:
           app: ${APPLICATION_NAME}
@@ -145,6 +145,20 @@ objects:
           targetPort: 8080
       selector:
         statefulset.kubernetes.io/pod-name: ${APPLICATION_NAME}-2
+
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: ${APPLICATION_NAME}-3
+      labels:
+        app: ${APPLICATION_NAME}-3
+    spec:
+      ports:
+        - protocol: TCP
+          port: 8080
+          targetPort: 8080
+      selector:
+        statefulset.kubernetes.io/pod-name: ${APPLICATION_NAME}-3
   
   - apiVersion: v1
     kind: Route
@@ -158,11 +172,14 @@ objects:
       to:
         kind: Service
         name: ${APPLICATION_NAME}-0
-        weight: 100
+        weight: 25
       alternateBackends:
         - kind: Service
           name: ${APPLICATION_NAME}-1
-          weight: 100
+          weight: 25
         - kind: Service
           name: ${APPLICATION_NAME}-2
-          weight: 100
+          weight: 25
+        - kind: Service
+          name: ${APPLICATION_NAME}-3
+          weight: 25
