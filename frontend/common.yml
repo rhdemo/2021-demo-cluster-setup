@@ -33,12 +33,14 @@ parameters:
     required: true
   - name: LOG_LEVEL
     required: true
+  - name: ADMIN_PASSWORD
+    required: true
   - name: KAFKA_BOOTSTRAP_URL
-    required: true
+    required: false
   - name: KAFKA_SVC_PASSWORD
-    required: true
+    required: false
   - name: KAFKA_SVC_USERNAME
-    required: true
+    required: false
   - name: HTTP_PORT
     value: "8080"
     required: true

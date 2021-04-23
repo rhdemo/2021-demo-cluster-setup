@@ -131,6 +131,20 @@ objects:
           targetPort: 8080
       selector:
         statefulset.kubernetes.io/pod-name: ${APPLICATION_NAME}-1
+
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: ${APPLICATION_NAME}-2
+      labels:
+        app: ${APPLICATION_NAME}-2
+    spec:
+      ports:
+        - protocol: TCP
+          port: 8080
+          targetPort: 8080
+      selector:
+        statefulset.kubernetes.io/pod-name: ${APPLICATION_NAME}-2
   
   - apiVersion: v1
     kind: Route
@@ -148,4 +162,7 @@ objects:
       alternateBackends:
         - kind: Service
           name: ${APPLICATION_NAME}-1
+          weight: 100
+        - kind: Service
+          name: ${APPLICATION_NAME}-2
           weight: 100

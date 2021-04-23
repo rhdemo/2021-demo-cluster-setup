@@ -18,14 +18,14 @@ oc project ${PROJECT} 2> /dev/null || oc new-project ${PROJECT}
 oc process -f "${DIR}/common.yml" \
 -p NODE_ENV="${NODE_ENV}" \
 -p LOG_LEVEL="${LOG_LEVEL}" \
+-p ADMIN_PASSWORD="${ADMIN_PASSWORD}" \
 -p KAFKA_BOOTSTRAP_URL="${KAFKA_BOOTSTRAP_URL}" \
 -p KAFKA_SVC_PASSWORD="${KAFKA_SVC_PASSWORD}" \
 -p KAFKA_SVC_USERNAME="${KAFKA_SVC_USERNAME}" \
 -p CLUSTER_NAME="${CLUSTER_NAME}" | oc create -f -
 
 # Deploys the admin interface used to play/pause/stop the game
-oc process -f "${DIR}/admin.yml" \
--p ADMIN_PASSWORD="${ADMIN_PASSWORD}" | oc create -f -
+oc process -f "${DIR}/admin.yml" | oc create -f -
 
 # Deploys the game websocket server
 oc process -f "${DIR}/game-server.yml" \
