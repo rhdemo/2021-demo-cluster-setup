@@ -10,11 +10,16 @@ make cluster/xsite/tokens DG_LOCAL_SITE=AWS DG_NAMESPACE=datagrid
 
 gcp
 make cluster/xsite/tokens DG_LOCAL_SITE=GCP DG_NAMESPACE=datagrid
+
+azure
+make cluster/xsite/tokens DG_LOCAL_SITE=AZURE DG_NAMESPACE=datagrid
 make cluster/xsite/secrets DG_NAMESPACE=datagrid
+make operator/install cluster/xsite/deploy DG_LOCAL_SITE=AZURE DG_NAMESPACE=datagrid
 
 aws
 make cluster/xsite/secrets DG_NAMESPACE=datagrid
 make operator/install cluster/xsite/deploy DG_LOCAL_SITE=AWS DG_NAMESPACE=datagrid
 
 gcp
+make cluster/xsite/secrets DG_NAMESPACE=datagrid
 make operator/install cluster/xsite/deploy DG_LOCAL_SITE=GCP DG_NAMESPACE=datagrid

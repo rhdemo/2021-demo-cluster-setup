@@ -1,0 +1,56 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: scoring-service
+    app.kubernetes.io/component: scoring-service
+    app.kubernetes.io/instance: scoring-service
+  name: scoring-service
+spec:
+  replicas: 2
+  selector:
+    deploymentconfig: scoring-service
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      labels:
+        deploymentconfig: scoring-service
+    spec:
+      containers:
+      - env:
+        - name: QUARKUS_INFINISPAN_CLIENT_SERVER_LIST
+          value: datagrid.datagrid.svc.cluster.local:11222
+        image: quay.io/redhatdemo/2021-scoring-service
+        imagePullPolicy: Always
+        name: scoring-service
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - scoring-service
+      from:
+        kind: ImageStreamTag
+        name: scoring-service:latest
+        namespace: battleships-scoring
+    type: ImageChange

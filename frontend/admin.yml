@@ -13,6 +13,8 @@ parameters:
     required: true
   - name: CONFIG_MAP_NAME
     value: 2021-demo-common
+  - name: SECRET_NAME
+    value: 2021-demo-common
   - name: REPLICAS
     value: "1"
   - name: IMAGE_REPOSITORY
@@ -26,8 +28,6 @@ parameters:
     value: 500m
   - name: CONTAINER_LIMIT_MEMORY
     value: 512Mi
-  - name: ADMIN_PASSWORD
-    required: true
   - name: ADMIN_USERNAME
     value: "admin"
 
@@ -55,9 +55,9 @@ objects:
             - env:
                 - name: ADMIN_USERNAME
                   value: ${ADMIN_USERNAME}
-                - name: ADMIN_PASSWORD
-                  value: ${ADMIN_PASSWORD}
               envFrom:
+                - secretRef:
+                    name: ${SECRET_NAME}
                 - configMapRef:
                     name: ${CONFIG_MAP_NAME}
               image: ${IMAGE_REPOSITORY}

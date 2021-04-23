@@ -6,7 +6,10 @@
                         <value media-type="text/plain" />
                     </encoding>
                     <backups>
-                        <backup site="BACKUP_SITE" strategy="ASYNC" enabled="true">
+                        <backup site="BACKUP_SITE_1" strategy="ASYNC" enabled="true">
+                            <take-offline min-wait="60000" after-failures="3" />
+                        </backup>
+                        <backup site="BACKUP_SITE_2" strategy="ASYNC" enabled="true">
                             <take-offline min-wait="60000" after-failures="3" />
                         </backup>
                     </backups>

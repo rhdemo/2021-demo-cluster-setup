@@ -6,6 +6,5 @@ PROJECT=${PROJECT:-ai}
 
 oc project ${PROJECT}
 oc process -f "${DIR}/ai-model.yml" | oc delete -f -
-oc process -f "${DIR}/ai-agent-server.yml" | oc delete -f -
+oc process -f "${DIR}/ai-agent-server.yml" -p NAMESPACE="${PROJECT}"  | oc delete -f -
 oc process -f "${DIR}/common.yml"  | oc delete -f -
-oc delete project ai

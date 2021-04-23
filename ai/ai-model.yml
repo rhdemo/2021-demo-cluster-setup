@@ -13,7 +13,7 @@ parameters:
   - name: CONFIG_MAP_NAME
     value: 2021-demo-common
   - name: REPLICAS
-    value: "1"
+    value: "2"
   - name: IMAGE_REPOSITORY
     value: quay.io/redhatdemo/2021-ai:latest
   - name: CONTAINER_REQUEST_CPU
