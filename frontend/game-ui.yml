@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Template
 labels:
-  application: admin-ui
+  application: game-ui
 metadata:
   name: game-ui
 
