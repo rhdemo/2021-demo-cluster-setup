@@ -17,6 +17,8 @@ objects:
   - apiVersion: eventing.knative.dev/v1
     kind: Trigger
     metadata:
+      labels:
+        app: game-server
       name: ${APPLICATION_NAME}-scores-0
     spec:
       broker: default
@@ -29,6 +31,8 @@ objects:
   - apiVersion: eventing.knative.dev/v1
     kind: Trigger
     metadata:
+      labels:
+        app: game-server
       name: ${APPLICATION_NAME}-scores-1
     spec:
       broker: default
@@ -41,6 +45,8 @@ objects:
   - apiVersion: eventing.knative.dev/v1
     kind: Trigger
     metadata:
+      labels:
+        app: game-server
       name: ${APPLICATION_NAME}-scores-2
     spec:
       broker: default
@@ -53,6 +59,8 @@ objects:
   - apiVersion: eventing.knative.dev/v1
     kind: Trigger
     metadata:
+      labels:
+        app: game-server
       name: ${APPLICATION_NAME}-bonuses-0
     spec:
       broker: default
@@ -65,6 +73,8 @@ objects:
   - apiVersion: eventing.knative.dev/v1
     kind: Trigger
     metadata:
+      labels:
+        app: game-server
       name: ${APPLICATION_NAME}-bonuses-1
     spec:
       broker: default
@@ -77,6 +87,8 @@ objects:
   - apiVersion: eventing.knative.dev/v1
     kind: Trigger
     metadata:
+      labels:
+        app: game-server
       name: ${APPLICATION_NAME}-bonuses-2
     spec:
       broker: default
