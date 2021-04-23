@@ -1,1 +1,0 @@
-curl -X POST -H 'content-type:application/json' --data '{ "shotCount": 5 }' http://game-server-frontend.apps.summit-dev-aws.m7o7.p1.openshiftapps.com/event/hit
