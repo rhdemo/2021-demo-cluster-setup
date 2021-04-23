@@ -15,8 +15,10 @@ parameters:
     value: ${STATS_SERVER}
     required: true
   - name: REPLAY_SERVER
+    value: ${REPLAY_SERVER}
     required: true
-  - name: GAME_SERVER
+  - name: RANK_SERVER
+    value: ${RANK_SERVER}
     required: true
 
 objects:
@@ -98,8 +100,8 @@ objects:
                   value: ${STATS_SERVER}
                 - name: REPLAY_SERVER
                   value: ${REPLAY_SERVER}
-                - name: GAME_SERVER
-                  value: ${GAME_SERVER}
+                - name: RANK_SERVER
+                  value: ${RANK_SERVER}
               resources: {}
               imagePullPolicy: Always
           restartPolicy: Always
