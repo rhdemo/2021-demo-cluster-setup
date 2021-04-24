@@ -363,10 +363,22 @@ spec:
         configMapKeyRef:
           name: kafka-metrics
           key: kafka-metrics-config.yml
+    template:
+      pod:
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+             nodeSelectorTerms:
+             - matchExpressions:
+               - key: demo.role
+                 operator: In
+                 values:
+                 - kafka
   zookeeper:
     replicas: 3
     storage:
       type: persistent-claim
+#      class: ssd
       size: 100Gi
       deleteClaim: false
     resources:
@@ -469,6 +481,29 @@ EOT
 
   header_text "* increase kafka-ch-dispatcher deployment replicas to 5"
   oc -n knative-eventing patch deployment/kafka-ch-dispatcher --patch='{"spec": {"replicas": 5}}'
+  header_text "* add pod affinity for kafka-ch-dispatcher pods to notes with label demo.role=kafka"
+  oc -n knative-eventing patch deployment/kafka-ch-dispatcher --patch='{"spec":
+     {"template":
+       {"spec":
+         {"affinity": {
+           "nodeAffinity": {
+             "requiredDuringSchedulingIgnoredDuringExecution": {
+               "nodeSelectorTerms": [{
+                   "matchExpressions": [{
+                     "key": "demo.role",
+                     "operator": "In",
+                     "values": [
+                       "kafka"
+                     ]
+                   }]
+                }]
+              }
+            }
+          }
+        }
+      }
+    }
+}'
 
 }
 
