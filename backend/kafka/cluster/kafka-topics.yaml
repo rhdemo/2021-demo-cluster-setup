@@ -4,7 +4,7 @@ kind: KafkaTopic
 metadata:
   name: match-updates
   labels:
-    strimzi.io/cluster: my-cluster
+    strimzi.io/cluster: demo2021
 spec:
   partitions: 50
   replicas: 3
@@ -18,7 +18,7 @@ kind: KafkaTopic
 metadata:
   name: player-matches-intermediary
   labels:
-    strimzi.io/cluster: my-cluster
+    strimzi.io/cluster: demo2021
 spec:
   partitions: 50
   replicas: 3
@@ -32,7 +32,7 @@ kind: KafkaTopic
 metadata:
   name: player-matches-aggregated
   labels:
-    strimzi.io/cluster: my-cluster
+    strimzi.io/cluster: demo2021
 spec:
   partitions: 50
   replicas: 3
@@ -46,7 +46,7 @@ kind: KafkaTopic
 metadata:
   name: matches-aggregated
   labels:
-    strimzi.io/cluster: my-cluster
+    strimzi.io/cluster: demo2021
 spec:
   partitions: 50
   replicas: 3
