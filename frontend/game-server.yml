@@ -52,7 +52,7 @@ objects:
         app: ${APPLICATION_NAME}
     spec:
       serviceName: ${APPLICATION_NAME}
-      replicas: 4
+      replicas: 3
       selector:
         matchLabels:
           app: ${APPLICATION_NAME}
@@ -172,14 +172,11 @@ objects:
       to:
         kind: Service
         name: ${APPLICATION_NAME}-0
-        weight: 25
+        weight: 34
       alternateBackends:
         - kind: Service
           name: ${APPLICATION_NAME}-1
-          weight: 25
+          weight: 33
         - kind: Service
           name: ${APPLICATION_NAME}-2
-          weight: 25
-        - kind: Service
-          name: ${APPLICATION_NAME}-3
-          weight: 25
+          weight: 33
