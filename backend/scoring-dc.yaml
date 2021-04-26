@@ -29,6 +29,8 @@ spec:
       - env:
         - name: QUARKUS_INFINISPAN_CLIENT_SERVER_LIST
           value: datagrid.datagrid.svc.cluster.local:11222
+        - name: QUARKUS_HTTP_CORS
+          value: "true"
         image: quay.io/redhatdemo/2021-scoring-service
         imagePullPolicy: Always
         name: scoring-service
@@ -45,12 +47,3 @@ spec:
       terminationGracePeriodSeconds: 30
   triggers:
   - type: ConfigChange
-  - imageChangeParams:
-      automatic: true
-      containerNames:
-      - scoring-service
-      from:
-        kind: ImageStreamTag
-        name: scoring-service:latest
-        namespace: battleships-scoring
-    type: ImageChange
