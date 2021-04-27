@@ -8,7 +8,6 @@ metadata:
   name: scoring-service
   namespace: battleships-scoring
 spec:
-  host: scoring-service-battleships-scoring.apps.summit-aws.28ts.p1.openshiftapps.com
   port:
     targetPort: 8080-tcp
   tls:
