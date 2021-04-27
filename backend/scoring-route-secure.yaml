@@ -1,0 +1,20 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: scoring-service
+    app.kubernetes.io/component: scoring-service
+    app.kubernetes.io/instance: scoring-service
+  name: scoring-service
+  namespace: battleships-scoring
+spec:
+  host: scoring-service-battleships-scoring.apps.summit-aws.28ts.p1.openshiftapps.com
+  port:
+    targetPort: 8080-tcp
+  tls:
+    termination: edge
+  to:
+    kind: Service
+    name: scoring-service
+    weight: 100
+  wildcardPolicy: None
