@@ -344,7 +344,8 @@ spec:
       volumes:
       - id: 0
         type: persistent-claim
-        size: 100Gi
+        size: 500Gi
+#        class: ssd
         deleteClaim: false
     config:
       offsets.topic.replication.factor: 3
@@ -366,6 +367,15 @@ spec:
     template:
       pod:
         affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: strimzi.io/name
+                      operator: In
+                      values:
+                        - my-cluster-kafka
+                topologyKey: "kubernetes.io/hostname"
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
              nodeSelectorTerms:
@@ -379,7 +389,7 @@ spec:
     storage:
       type: persistent-claim
 #      class: ssd
-      size: 100Gi
+      size: 500Gi
       deleteClaim: false
     resources:
       requests:
@@ -388,6 +398,18 @@ spec:
       limits:
         cpu: "1"
         memory: 2Gi
+    template:
+      pod:
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: strimzi.io/name
+                      operator: In
+                      values:
+                        - my-cluster-zookeeper
+                topologyKey: "kubernetes.io/hostname"
     metricsConfig:
       type: jmxPrometheusExporter
       valueFrom:
@@ -436,7 +458,7 @@ data:
       kind: KafkaChannel
       spec:
         numPartitions: 100
-        replicationFactor: 1
+        replicationFactor: 3
 EOT
   )"
   apply "$default_channel"
@@ -458,14 +480,14 @@ spec:
           kind: KafkaChannel
           spec:
             numPartitions: 100
-            replicationFactor: 1
+            replicationFactor: 3
     config-br-default-channel:
       channelTemplateSpec: |
         apiVersion: messaging.knative.dev/v1beta1
         kind: KafkaChannel
         spec:
           numPartitions: 100
-          replicationFactor: 1
+          replicationFactor: 3
 EOT
 )"
   header_text "* Applying defaults to knative-eventing kafkachannel defaults"
