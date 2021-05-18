@@ -100,7 +100,7 @@ EOT
 apply_streams() {
     header_text "*applying kafka 2.6"
     kafka=$(cat <<EOT
-apiVersion: kafka.strimzi.io/v1beta1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
   name: my-cluster
@@ -316,7 +316,7 @@ oc apply -f $DIR/strimzi_metrics.yaml
 apply_strimzi() {
 
   kafka=$(cat <<EOT
-apiVersion: kafka.strimzi.io/v1beta1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
   name: my-cluster
